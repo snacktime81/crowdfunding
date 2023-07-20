@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { ErrorRequestHandler } from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
@@ -21,15 +21,17 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use('/', pageRouter);
 
-app.use((req, res, next) => {
-  const error =  new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const error: Error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+  error.status = 404;
   next(error);
 });
 
-const errorHandler = (err: Error, req:express.Request, res:express.Response, next: express.NextFunction) => {
+const errorHandler: ErrorRequestHandler = (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err);
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+  res.status(err.status || 500);
   res.render('error');
 };
 app.use(errorHandler);
