@@ -1,9 +1,5 @@
-export {}
-
-declare global {
-  interface CError extends Error {
-    status?: number;
-  }
+interface CustomError extends Error {
+  status?: number;
 }
 
-
+export { CustomError };
