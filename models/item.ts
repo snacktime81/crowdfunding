@@ -12,6 +12,7 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
 	declare percent: number;
 	declare createdAt: CreationOptional<Date>;
 	declare updatedAt: CreationOptional<Date>;
+	declare price: number;
 
 	declare UserId: ForeignKey<User['id']>;
 
@@ -40,6 +41,10 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
 				allowNull: true,
 			},
 			percent: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+			},
+			price: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
