@@ -14,16 +14,24 @@ const renderItem: RequestHandler = (req : Request, res: Response) => {
 }
 
 const postItem: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
-	{name, price, percent, deadline, image, describe} = req.body;
-	await Item.create({
-		name,
-		img: image,
-		deadline,
-		describe,
-		percent,
-		price,
-	})
-	res.redirect('/item');
+	try{
+		console.log('re', req);
+		const {name, price, percent, deadline, image, describe} = req.body;
+		await Item.create({
+			name,
+			img: image,
+			deadline,
+			describe,
+			percent,
+			price,
+			
+			UserId : req.user?.id,
+		})
+		res.redirect('/item');
+	}
+	catch(err){
+		console.error(err);
+	}
 }
 
 export {renderMain, renderLogin, renderItem, postItem};

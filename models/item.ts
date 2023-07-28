@@ -48,6 +48,7 @@ class Item extends Model<InferAttributes<Item>, InferCreationAttributes<Item>> {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 			},
+			
 			createdAt: Sequelize.DATE,
 			updatedAt: Sequelize.DATE,
 		}, {
