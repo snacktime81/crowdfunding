@@ -1,6 +1,10 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import User from '../models/user';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const postUser: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
@@ -9,11 +13,10 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		const exUser = await User.findOne({ where: { email } });
 		
 		if(exUser){
-			const url: string  = '/join?error=exist';
 			return res.send(
 				  `<script>
 					alert('이미 존재하는 email입니다.');
-					location.href='${url}';
+					location.href='/login';
 				  </script>`
 				);
 		}
@@ -33,4 +36,44 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 	}
 }
 
-export {postUser};
+const postLogin: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const {email, password} = req.body;
+
+		const exUser = await User.findOne({where: {email: email}})
+
+		if(exUser){
+			console.log(exUser)
+			console.log(exUser.id)
+			const accessSecret: string = process.env.ACCESS_SECRET || '';
+			
+			const accessToken = jwt.sign({
+				id: exUser.id,
+				email: exUser.email,
+				nick: exUser.nick,
+			}, accessSecret, {
+				expiresIn: '5m',
+				issuer: 'server',
+			} );
+			
+			console.log(accessToken)
+		}
+		
+		else{
+			res.status(403);
+			return res.send(
+				  `<script>
+					alert('없는 계정입니다.');
+					location.href='/login';  
+				  </script>`
+				);
+		}
+		res.redirect('/')
+	}
+	catch(err){
+		console.error(err);
+		return next(err);
+	}
+}
+
+export {postUser, postLogin};

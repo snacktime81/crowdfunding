@@ -15,7 +15,7 @@ const renderItem: RequestHandler = (req : Request, res: Response) => {
 
 const postItem: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		console.log('re', req);
+
 		const {name, price, percent, deadline, image, describe} = req.body;
 		await Item.create({
 			name,
