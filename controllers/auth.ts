@@ -42,24 +42,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 
 		const exUser = await User.findOne({where: {email: email}})
 
-		if(exUser){
-			console.log(exUser)
-			console.log(exUser.id)
-			const accessSecret: string = process.env.ACCESS_SECRET || '';
-			
-			const accessToken = jwt.sign({
-				id: exUser.id,
-				email: exUser.email,
-				nick: exUser.nick,
-			}, accessSecret, {
-				expiresIn: '5m',
-				issuer: 'server',
-			} );
-			
-			console.log(accessToken)
-		}
-		
-		else{
+		if(!exUser){
 			res.status(403);
 			return res.send(
 				  `<script>
@@ -68,6 +51,27 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 				  </script>`
 				);
 		}
+
+		const accessSecret: string = process.env.ACCESS_SECRET || " ";
+		
+		const accessToken: string = jwt.sign({
+			id: exUser.id,
+			email: exUser.email,
+			nick: exUser.nick,
+		}, accessSecret, {
+			expiresIn: '5m',
+		});
+		
+		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
+		
+		const refreshToken: string = jwt.sign({
+			id: exUser.id,
+			email: exUser.email,
+			nick: exUser.nick,
+		}, refreshSecret, {
+			expiresIn: '5m',
+		});
+
 		res.redirect('/')
 	}
 	catch(err){
