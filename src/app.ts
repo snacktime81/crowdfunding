@@ -9,6 +9,7 @@ import { CustomError } from '../types';
 dotenv.config();
 import pageRouter from '../routes/page';
 import authRouter from '../routes/auth';
+import {loginAuth} from '../controllers/auth';
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
+app.use(loginAuth)
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);

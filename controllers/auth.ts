@@ -71,7 +71,17 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 		}, refreshSecret, {
 			expiresIn: '5m',
 		});
-
+		
+		res.cookie('accessToken', accessToken, {
+			secure: false,
+			httpOnly: true,
+		})
+		res.cookie('refreshToken', refreshToken, {
+			secure: false,
+			httpOnly: true,
+		})
+		
+		res.status(200)
 		res.redirect('/')
 	}
 	catch(err){
@@ -80,4 +90,20 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 	}
 }
 
-export {postUser, postLogin};
+const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
+		const user = await User.findOne( {where: {
+			id: data.id,
+		}} )
+		res.status(200);
+		next()
+	}
+	catch(err){
+		res.status((500));
+		next()
+	}
+}
+
+export {postUser, postLogin, loginAuth};
