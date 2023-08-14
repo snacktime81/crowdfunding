@@ -97,12 +97,25 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
+		
+		
 		res.status(200);
 		next()
 	}
 	catch(err){
+		console.log('not logged in');
 		res.status((500));
 		next()
+	}
+}
+
+const logout: RequestHandler = (req, res, next) => {
+	try{
+		res.cookie('accessToken', '');
+		res.status(200);
+	}
+	catch(err){
+		res.status(500);
 	}
 }
 
