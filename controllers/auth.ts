@@ -97,15 +97,13 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
-		
-		
+
 		res.status(200);
-		next()
+		next();
 	}
 	catch(err){
-		console.log('not logged in');
-		res.status((500));
-		next()
+		res.status(500).send('로그인을 해주세요');
+		
 	}
 }
 
@@ -119,4 +117,4 @@ const logout: RequestHandler = (req, res, next) => {
 	}
 }
 
-export {postUser, postLogin, loginAuth};
+export {postUser, postLogin, loginAuth, logout};

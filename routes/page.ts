@@ -3,12 +3,18 @@ import{
 	renderMain, renderLogin, renderItem, postItem
 } from '../controllers/page';
 
+import{
+	loginAuth,
+} from '../controllers/auth';
+
 const router = express.Router();
+
 
 router.get('/', renderMain);
 
 router.get('/login', renderLogin);
 
+router.use('/item', loginAuth);
 router.get('/item', renderItem);
 
 router.post('/item', postItem)

@@ -1,8 +1,9 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-import Item from '../models/item'
+import Item from '../models/item';
+import {loginAuth} from '../controllers/auth';
 
 const renderMain: RequestHandler = (req: Request, res: Response) => {
- 	res.render('index');
+	res.render('index');
 };
 
 const renderLogin: RequestHandler = (req : Request, res: Response) => {
@@ -10,6 +11,7 @@ const renderLogin: RequestHandler = (req : Request, res: Response) => {
 }
 
 const renderItem: RequestHandler = (req : Request, res: Response) => {
+	console.log("RRRRRequeset", req);
 	res.render('item');
 }
 
