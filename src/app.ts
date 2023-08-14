@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import dotenv from 'dotenv';
+import nunjucks from 'nunjucks';
 import { sequelize } from "../models";
 import { CustomError } from '../types';
 
@@ -14,7 +15,11 @@ import {loginAuth} from '../controllers/auth';
 const app = express();
 app.set('port', process.env.PORT || 8000);
 app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
+app.set('view engine', 'html'); 
+nunjucks.configure('views', { 
+  express: app,
+  watch: true,
+});
 
 sequelize.sync({ force: false })
   .then(() => {
@@ -30,7 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-app.use(loginAuth)
+
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
