@@ -69,7 +69,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			email: exUser.email,
 			nick: exUser.nick,
 		}, refreshSecret, {
-			expiresIn: '5m',
+			expiresIn: '300m',
 		});
 		
 		res.cookie('accessToken', accessToken, {
@@ -94,6 +94,7 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
+		console.log(data);
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
@@ -102,8 +103,8 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		next();
 	}
 	catch(err){
-		res.status(500).send('로그인을 해주세요');
-		
+		res.status(500);
+		res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/';</script>");
 	}
 }
 

@@ -11,7 +11,6 @@ const renderLogin: RequestHandler = (req : Request, res: Response) => {
 }
 
 const renderItem: RequestHandler = (req : Request, res: Response) => {
-	console.log("RRRRRequeset", req);
 	res.render('item');
 }
 
