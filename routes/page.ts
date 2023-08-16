@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderMain, renderLogin, renderItem, postItem
+	renderMain, renderLogin, renderItem, postItem, renderJoin,
 } from '../controllers/page';
 
 import{
@@ -13,6 +13,7 @@ const router = express.Router();
 router.get('/', renderMain);
 
 router.get('/login', renderLogin);
+router.get('/join', renderJoin);
 
 router.use('/item', loginAuth);
 router.get('/item', renderItem);

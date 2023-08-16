@@ -10,6 +10,10 @@ const renderLogin: RequestHandler = (req : Request, res: Response) => {
 	res.render('login');
 }
 
+const renderJoin: RequestHandler = (req : Request, res: Response) => {
+	res.render('join');
+}
+
 const renderItem: RequestHandler = (req : Request, res: Response) => {
 	res.render('item');
 }
@@ -35,4 +39,4 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 	}
 }
 
-export {renderMain, renderLogin, renderItem, postItem};
+export {renderMain, renderLogin, renderItem, postItem, renderJoin};
