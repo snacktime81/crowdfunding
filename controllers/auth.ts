@@ -94,7 +94,7 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
-		console.log(data);
+
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
@@ -108,6 +108,37 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 	}
 }
 
+const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextFunction) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
+
+		const user = await User.findOne( {where: {
+			id: data.id,
+		}} )
+		next()
+
+	}
+	catch(err){
+		next('route');
+	}
+}
+
+const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextFunction) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
+
+		const user = await User.findOne( {where: {
+			id: data.id,
+		}} )
+		next('route');
+	}
+	catch(err){
+		next()
+	}
+}
+
 const logout: RequestHandler = (req, res, next) => {
 	try{
 		res.cookie('accessToken', '');
@@ -118,4 +149,4 @@ const logout: RequestHandler = (req, res, next) => {
 	}
 }
 
-export {postUser, postLogin, loginAuth, logout};
+export {postUser, postLogin, loginAuth, logout, isLoggedIn, isNotLoggedIn};

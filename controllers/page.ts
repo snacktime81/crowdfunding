@@ -1,9 +1,12 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import Item from '../models/item';
-import {loginAuth} from '../controllers/auth';
 
 const renderMain: RequestHandler = (req: Request, res: Response) => {
-	res.render('index');
+		res.render('index', {loginState: false});	
+};
+
+const renderMain2: RequestHandler = (req: Request, res: Response) => {
+		res.render('index', {loginState: true});	
 };
 
 const renderLogin: RequestHandler = (req : Request, res: Response) => {
@@ -39,4 +42,4 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 	}
 }
 
-export {renderMain, renderLogin, renderItem, postItem, renderJoin};
+export {renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2};
