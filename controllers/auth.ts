@@ -139,14 +139,6 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 	}
 }
 
-const logout: RequestHandler = (req, res, next) => {
-	try{
-		res.cookie('accessToken', '');
-		res.status(200);
-	}
-	catch(err){
-		res.status(500);
-	}
-}
 
-export {postUser, postLogin, loginAuth, logout, isLoggedIn, isNotLoggedIn};
+
+export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn};

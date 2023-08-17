@@ -42,4 +42,15 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 	}
 }
 
-export {renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2};
+const logout: RequestHandler = (req, res) => {
+	try{
+		res.cookie('accessToken', '');
+		res.cookie('refreshToken', '');
+		res.status(200).redirect('/');
+	}
+	catch(err){
+		res.status(500);
+	}
+}
+
+export {renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2, logout};
