@@ -59,7 +59,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			email: exUser.email,
 			nick: exUser.nick,
 		}, accessSecret, {
-			expiresIn: '5m',
+			expiresIn: '1m',
 		});
 		
 		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
@@ -90,6 +90,36 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 	}
 }
 
+const refreshToken: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
+	try{
+		const refreshToken: string = req.cookies.refreshToken;
+		const data: any = jwt.verify(refreshToken, process.env.REFRESH_SECRET || '');
+		
+		const accessSecret: string = process.env.ACCESS_SECRET || " ";
+		
+		const accessToken: string = jwt.sign({
+			id: data.id,
+			email: data.email,
+			nick: data.nick,
+		}, accessSecret, {
+			expiresIn: '1m',
+		});
+		
+		res.cookie('accessToken', accessToken, {
+			secure: false,
+			httpOnly: true,
+		});
+		
+		
+		next('route');
+		
+	}
+	catch(err){
+
+		next();
+	}
+}
+
 const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
@@ -98,12 +128,13 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
-
+		console.log('original: ', req.cookies.accessToken);
 		res.status(200);
 		next();
 	}
 	catch(err){
 		res.status(500);
+		console.log('expires:  ', req.cookies.accessToken);
 		res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/';</script>");
 	}
 }
@@ -141,4 +172,4 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 
 
 
-export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn};
+export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken};
