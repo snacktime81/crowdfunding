@@ -110,7 +110,6 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 			httpOnly: true,
 		});
 		
-		
 		next('route');
 		
 	}
@@ -128,13 +127,12 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
-		console.log('original: ', req.cookies.accessToken);
+
 		res.status(200);
 		next();
 	}
 	catch(err){
 		res.status(500);
-		console.log('expires:  ', req.cookies.accessToken);
 		res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/';</script>");
 	}
 }
