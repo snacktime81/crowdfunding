@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2, logout,
+	renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2, logout, renderItemList
 } from '../controllers/page';
 
 import{
@@ -19,6 +19,8 @@ router.get('/logout', logout);
 
 router.use('/item', loginAuth);
 router.get('/item', renderItem);
+
+router.get('/itemList', renderItemList);
 
 router.post('/item', postItem)
 

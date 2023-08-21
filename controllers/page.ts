@@ -1,6 +1,8 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import Item from '../models/item';
 
+import { Item as itemType } from '../types/item';
+
 const renderMain: RequestHandler = (req: Request, res: Response) => {
 		res.render('index', {loginState: false});	
 };
@@ -19,6 +21,12 @@ const renderJoin: RequestHandler = (req : Request, res: Response) => {
 
 const renderItem: RequestHandler = (req : Request, res: Response) => {
 	res.render('item');
+}
+
+const renderItemList: RequestHandler = async(req : Request, res: Response) => {
+	
+	let items: itemType[] = await Item.findAll();
+	res.render('itemList', {items: items});
 }
 
 const postItem: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
@@ -53,4 +61,4 @@ const logout: RequestHandler = (req, res) => {
 	}
 }
 
-export {renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2, logout};
+export {renderMain, renderLogin, renderItem, postItem, renderJoin, renderMain2, logout, renderItemList};
