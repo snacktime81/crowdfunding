@@ -20,7 +20,7 @@ router.get('/logout', logout);
 router.use('/item', loginAuth);
 router.get('/item', renderItem);
 
-router.get('/itemList', renderItemList);
+router.get('/item/list', renderItemList);
 
 router.post('/item', postItem)
 

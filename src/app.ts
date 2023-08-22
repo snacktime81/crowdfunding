@@ -10,6 +10,7 @@ import { CustomError } from '../types';
 dotenv.config();
 import pageRouter from '../routes/page';
 import authRouter from '../routes/auth';
+import itemRouter from '../routes/item';
 import {loginAuth} from '../controllers/auth';
 
 const app = express();
@@ -39,6 +40,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/item', itemRouter);
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   const error: CustomError = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
