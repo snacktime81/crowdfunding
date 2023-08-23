@@ -13,10 +13,12 @@
 		</h1>
 	</div>
 	<div>
-	<ol class="large-numbers">
-		{% for item in items %}
-			<li> {{item.name}} </li>
-		{% endfor %}
-	</ol>
-</div>
+		<form method='GET'>
+			<ol class="large-numbers">
+				{% for item in items %}
+					<li><a href='{{item.id}}'> {{item.name}} </a></li>
+				{% endfor %}
+			</ol>
+		</form>
+	</div>
 </body>

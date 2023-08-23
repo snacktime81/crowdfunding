@@ -30,8 +30,19 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 
 const renderItemList: RequestHandler = async(req : Request, res: Response) => {
 	
-	let items: itemType[] = await Item.findAll();
+	const items: itemType[] = await Item.findAll();
 	res.render('itemList', {items: items});
 }
 
-export {renderItem, postItem, renderItemList};
+const renderItemId: RequestHandler = async(req: Request, res: Response) => {
+	
+	const {id} = req.params;
+	
+	const item = await Item.findOne({
+		where: { id }  
+	});
+	
+	res.render('itemDetail', {item});
+}
+
+export {renderItem, postItem, renderItemList, renderItemId};

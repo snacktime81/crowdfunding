@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderItemList, renderItem, postItem
+	renderItemList, renderItem, postItem, renderItemId
 } from '../controllers/item';
 
 import{
@@ -17,6 +17,6 @@ router.post('/', postItem)
 
 router.get('/list', renderItemList);
 
-router.get('/id', renderItemList);
+router.get('/:id', renderItemId);
 
 export default router;
