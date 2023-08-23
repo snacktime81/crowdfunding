@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{item.name}}</title>
+  <link rel="stylesheet" href="itemDetail.css">
+</head>
+<body>
+	<main class="container">
+
+	<!-- Left Column / Headphones Image -->
+	<div class="left-column">
+		<img data-image="black" src="{{item.img}}" alt="">
+
+	</div>
+
+
+	<!-- Right Column -->
+	<div class="right-column">
+
+		<!-- Product Description -->
+		<div class="product-description">
+			<span>Idea</span>
+			<h1>{{item.name}}</h1>
+			<p>{{item.describe}}</p>
+		</div>
+
+			<!-- Product Configuration -->
+		<div class="product-configuration">
+
+			<!-- Cable Configuration -->
+			<div class="cable-config">
+				<span>Purchace Percent</span>
+				<div class="textbox">
+				  <input type="number" min='1', max='{{item.percent}}' id="ex_input">
+				</div>
+				
+			
+
+			<a href="#">How to configurate your headphones</a>
+		</div>
+	</div>
+
+	<!-- Product Pricing -->
+	<div class="product-price">
+	  <a href="#" class="cart-btn">Buy</a>
+	</div>
+	</div>
+	</main>
+</body>
