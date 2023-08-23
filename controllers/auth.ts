@@ -145,11 +145,11 @@ const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextF
 		const user = await User.findOne( {where: {
 			id: data.id,
 		}} )
-		next()
+		next();
 
 	}
 	catch(err){
-		next('route');
+		res.redirect('/');
 	}
 }
 
@@ -164,7 +164,7 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 		next('route');
 	}
 	catch(err){
-		next()
+		next();
 	}
 }
 

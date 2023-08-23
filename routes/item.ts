@@ -9,7 +9,7 @@ import{
 
 const router = express.Router();
 
-router.use('/', loginAuth);
+router.get('/', loginAuth);
 router.get('/', renderItem);
 
 router.post('/', loginAuth);
@@ -17,5 +17,6 @@ router.post('/', postItem)
 
 router.get('/list', renderItemList);
 
+router.get('/id', renderItemList);
 
 export default router;
