@@ -33,19 +33,17 @@
 			<div class="cable-config">
 				<span>Purchace Percent</span>
 				<div class="textbox">
-				  <input type="number" min='1', max='{{item.percent}}' id="ex_input">
+				  <input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()'>
 				</div>
-				
-			
+			</div>
+		</div>
 
-			<a href="#">How to configurate your headphones</a>
+		<!-- Product Pricing -->
+		<p id='price' style="display:none;">{{item.price}}</p>
+		<div class="product-price">
+		  <a href="#" class="cart-btn">Buy</a>
 		</div>
 	</div>
-
-	<!-- Product Pricing -->
-	<div class="product-price">
-	  <a href="#" class="cart-btn">Buy</a>
-	</div>
-	</div>
+	<script src='itemDetail.js'></script>
 	</main>
 </body>
