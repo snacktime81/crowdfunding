@@ -13,6 +13,7 @@ function getPercent(){
 	let price = document.getElementById('price').innerHTML;
 	
 	span = document.createElement('span');
+	span.className = 'totalPrice';
 	span.innerHTML = `${price * percent}₩`;
 	div.insertBefore(span, div.firstChild);
 }

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{item.name}}</title>
-  <link rel="stylesheet" href="itemDetail.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{item.name}}</title>
+	<link rel="stylesheet" href="itemDetail.css">
+	<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+	
 </head>
 <body>
 	<main class="container">
@@ -41,9 +43,10 @@
 		<!-- Product Pricing -->
 		<p id='price' style="display:none;">{{item.price}}</p>
 		<div class="product-price">
-		  <a href="#" class="cart-btn">Buy</a>
+		  <a href="#" class="cart-btn" onclick='requestPay()'>Buy</a>
 		</div>
 	</div>
 	<script src='itemDetail.js'></script>
+	<script src="payment.js"></script>
 	</main>
-</body>
+</body>	
