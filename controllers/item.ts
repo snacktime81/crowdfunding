@@ -3,6 +3,8 @@ import Item from '../models/item';
 
 import { Item as itemType } from '../types/item';
 
+import pool from "../models/db";
+
 const renderItem: RequestHandler = (req : Request, res: Response) => {
 	res.render('item');
 }
@@ -30,6 +32,14 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 
 const renderItemList: RequestHandler = async(req : Request, res: Response) => {
 	
+
+	const conn = await pool.getConnection();
+
+	let query = "select * from items";
+
+	const q = (await pool.query(query));
+	console.log(q);
+
 	const items: itemType[] = await Item.findAll();
 	res.render('itemList', {items: items});
 }
