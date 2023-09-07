@@ -4,25 +4,25 @@ dotenv.config();
 
 export default {
   development: {
-    username: 'root',
+    user: 'root',
     password: process.env.DB_PASSWORD,
     database: 'crowdfunding',
     host: '127.0.0.1',
-    dialect: 'mysql' as const,
+    connectionLimit: 30,
   },
   test: {
-    username: "root",
+    user: "root",
     password: process.env.DB_PASSWORD,
     database: "crowdfunding",
     host: "127.0.0.1",
-    dialect: "mysql" as const
+    connectionLimit: 30,
   },
   production: {
-    username: 'root',
+    user: 'root',
     password: process.env.DB_PASSWORD,
     database: 'crowdfunding',
     host: '127.0.0.1',
-    dialect: 'mysql' as const,
+    connectionLimit: 30,
     logging: false,
   },
 };

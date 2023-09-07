@@ -2,25 +2,25 @@ require('dotenv').config();
 
 module.exports = {
   development: {
-    username: 'root',
+    user: 'root',
     password: process.env.DB_PASSWORD,
     database: 'crowdfunding',
     host: '127.0.0.1',
-    dialect: 'mysql',
+    connectionLimit: 30,
   },
   test: {
-    username: "root",
+    user: "root",
     password: process.env.DB_PASSWORD,
     database: "crowdfunding",
     host: "127.0.0.1",
-    dialect: "mysql"
+    connectionLimit: 30,
   },
   production: {
-    username: 'root',
+    user: 'root',
     password: process.env.DB_PASSWORD,
     database: 'crowdfunding',
     host: '127.0.0.1',
-    dialect: 'mysql',
+    connectionLimit: 30,
     logging: false,
   },
 };
