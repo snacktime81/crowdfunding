@@ -1,9 +1,10 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-import Item from '../models/item';
+//import Item from '../models/item';
 
 import { Item as itemType } from '../types/item';
 
 const renderMain: RequestHandler = (req: Request, res: Response) => {
+
 		res.render('index', {loginState: false});	
 };
 
