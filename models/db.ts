@@ -3,14 +3,6 @@ import configObj from '../config/config.js';
 const config = configObj['development'];
 
 
-// const pool = mysql.createPool({
-//     host: config.host,
-//     user: config.name,
-//     password: config.password,
-//     database: config.database,
-//     connectionLimit: config.connectionLimit
-// })
-
 const pool = mysql.createPool(config);
 
 export default pool;
