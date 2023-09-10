@@ -1,8 +1,11 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { RowDataPacket, FieldPacket } from "mysql2/promise";
+import pool from "../models/db";
+
+import {user} from "../types/model"
 
 dotenv.config();
 
@@ -10,8 +13,12 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 	try{
 		const {nick, email, password, age} = req.body;
 		
-		const exUser = await User.findOne({ where: { email } });
-		
+		let query = "SELECT id FROM USER WHERE email = (?)";
+		let data = [email];
+
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const exUser = rows[0];
+
 		if(exUser){
 			return res.send(
 				  `<script>
@@ -21,13 +28,12 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 				);
 		}
 		const hash = await bcrypt.hash(password, 12);
+		
+		query = "INSERT INTO USER (email, name, password) VALUES (?, ?, ?)";
+		data = [email, nick, hash];
+		
+		await pool.query(query, data);
 
-		await User.create({
-			email,
-			nick,
-			password: hash,
-			age,
-		});
 		return res.redirect('/');
 	}
 	catch(err){
@@ -40,7 +46,14 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 	try{
 		const {email, password} = req.body;
 
-		const exUser = await User.findOne({where: {email: email}})
+		let query = "SELECT * FROM USER WHERE email = (?)";
+		let data = [email]
+
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const exUser = rows[0];
+		// console.log('exUser: ', exUser);
+		// console.log('rows: ', rows);
+		// console.log('fields: ', fields);
 
 		if(!exUser){
 			res.status(403);
@@ -80,7 +93,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			secure: false,
 			httpOnly: true,
 		})
-		
+
 		res.status(200)
 		res.redirect('/')
 	}
@@ -124,12 +137,17 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		const accessToken: string = req.cookies.accessToken;
 		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
 
-		const user = await User.findOne( {where: {
-			id: data.id,
-		}} )
+		let query = "SELECT id FROM USER WHERE id = (?)";
+		let dataId = [data.id]
 
-		res.status(200);
-		next();
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const exUser = rows[0];
+		
+		if (rows.length != 0) {
+			res.status(200);
+			next();
+		}
+		
 	}
 	catch(err){
 		res.status(500);
@@ -142,13 +160,20 @@ const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextF
 		const accessToken: string = req.cookies.accessToken;
 		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
 
-		const user = await User.findOne( {where: {
-			id: data.id,
-		}} )
-		next();
+		let query = "SELECT id FROM USER WHERE id = (?)";
+		let dataId = [data.id]
+
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
+		const exUser = rows[0];
+		console.log(rows);
+		
+		if (rows.length != 0) {
+			next();
+		}
 
 	}
 	catch(err){
+		console.log(2);
 		res.redirect('/');
 	}
 }
@@ -158,10 +183,14 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 		const accessToken: string = req.cookies.accessToken;
 		const data: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
 
-		const user = await User.findOne( {where: {
-			id: data.id,
-		}} )
-		next('route');
+		let query = "SELECT id FROM USER WHERE id = (?)";
+		let dataId = [data.id]
+
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const exUser = rows[0];
+		if(rows.length != 0){
+			next('route');
+		}
 	}
 	catch(err){
 		next();
