@@ -1,6 +1,7 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
-import { Item as itemType } from '../types/item';
+import {FieldPacket} from 'mysql2/promise';
+import { item } from '../types/model';
 
 import pool from "../models/db";
 
@@ -31,17 +32,13 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 }
 
 const renderItemList: RequestHandler = async(req : Request, res: Response) => {
-	
 
-	const conn = await pool.getConnection();
+	let query = "SELECT * FROM ITEM";
 
-	let query = "select * from items";
+	const [rows, fields]: [item[], FieldPacket[]] = await pool.query(query);
+    const items = rows;
 
-	const q = (await pool.query(query));
-	console.log(q);
-
-	//const items: itemType[] = await Item.findAll();
-	res.render('itemList', {items: []});
+	res.render('itemList', {items: items});
 }
 
 const renderItemId: RequestHandler = async(req: Request, res: Response) => {
