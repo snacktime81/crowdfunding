@@ -8,4 +8,15 @@ interface user extends RowDataPacket{
     authority: string
 }
 
-export {user}
+interface item extends RowDataPacket{
+    id: number,
+    user_id: number,
+    name: string,
+    price: number,
+    percent: number,
+    explanation: string,
+    img: string,
+    deadline: string
+}
+
+export {user, item}
