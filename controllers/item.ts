@@ -1,6 +1,5 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-//import Item from '../models/item';
-
+import jwt from 'jsonwebtoken';
 import { Item as itemType } from '../types/item';
 
 import pool from "../models/db";
@@ -13,16 +12,17 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 	try{
 
 		const {name, price, percent, deadline, image, describe} = req.body;
-		await Item.create({
-			name,
-			img: image,
-			deadline,
-			describe,
-			percent,
-			price,
-			
-			UserId : req.user?.id,
-		})
+		let query = "INSERT INTO ITEM(user_id, name, price, percent, explanation, img, deadline) VALUES(?, ?, ?, ?, ?, ?, ?) ";
+		
+		const accessToken: string = req.cookies.accessToken;
+		const user: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
+		console.log(user);
+		const userId = user.id;
+		
+		
+		const data = [userId, name, price, percent, describe, image, deadline];
+		
+		await pool.query(query, data);
 		res.redirect('/item');
 	}
 	catch(err){
@@ -40,19 +40,19 @@ const renderItemList: RequestHandler = async(req : Request, res: Response) => {
 	const q = (await pool.query(query));
 	console.log(q);
 
-	const items: itemType[] = await Item.findAll();
-	res.render('itemList', {items: items});
+	//const items: itemType[] = await Item.findAll();
+	res.render('itemList', {items: []});
 }
 
 const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	
 	const {id} = req.params;
 	
-	const item = await Item.findOne({
-		where: { id }  
-	});
+	// const item = await Item.findOne({
+	// 	where: { id }  
+	// });
 	
-	res.render('itemDetail', {item});
+	res.render('itemDetail', {});
 }
 
 export {renderItem, postItem, renderItemList, renderItemId};
