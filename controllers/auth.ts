@@ -140,7 +140,7 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		let query = "SELECT id FROM USER WHERE id = (?)";
 		let dataId = [data.id]
 
-		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
 		const exUser = rows[0];
 		
 		if (rows.length != 0) {
@@ -186,7 +186,7 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 		let query = "SELECT id FROM USER WHERE id = (?)";
 		let dataId = [data.id]
 
-		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
 		const exUser = rows[0];
 		if(rows.length != 0){
 			next('route');
