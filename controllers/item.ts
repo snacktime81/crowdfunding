@@ -45,11 +45,17 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	
 	const {id} = req.params;
 	
+	const query = 'SELECT * FROM ITEM WHERE id = (?)';
+	const dataId = [id];
+
+	const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
+	const item = items[0];
+
 	// const item = await Item.findOne({
 	// 	where: { id }  
 	// });
 	
-	res.render('itemDetail', {});
+	res.render('itemDetail', {item});
 }
 
 export {renderItem, postItem, renderItemList, renderItemId};
