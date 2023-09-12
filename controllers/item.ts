@@ -50,10 +50,6 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 
 	const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
 	const item = items[0];
-
-	// const item = await Item.findOne({
-	// 	where: { id }  
-	// });
 	
 	res.render('itemDetail', {item});
 }
