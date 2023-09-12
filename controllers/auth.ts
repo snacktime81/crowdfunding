@@ -9,10 +9,23 @@ import {user} from "../types/model"
 
 dotenv.config();
 
+interface reqBody{
+	name: string;
+	email: string;
+	password: string;
+}
+
+interface payload extends jwt.JwtPayload{
+	id: number,
+	email: string,
+	name: string
+}
+
 const postUser: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const {nick, email, password, age} = req.body;
 		
+		
+		const {name, email, password}: reqBody = req.body;
 		let query = "SELECT id FROM USER WHERE email = (?)";
 		let data = [email];
 
@@ -30,7 +43,7 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		const hash = await bcrypt.hash(password, 12);
 		
 		query = "INSERT INTO USER (email, name, password) VALUES (?, ?, ?)";
-		data = [email, nick, hash];
+		data = [email, name, hash];
 		
 		await pool.query(query, data);
 
@@ -44,16 +57,15 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 
 const postLogin: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		const {email, password} = req.body;
+		
+		const {email, password}: Omit<reqBody, 'name'> = req.body;
 
 		let query = "SELECT * FROM USER WHERE email = (?)";
 		let data = [email]
 
 		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
 		const exUser = rows[0];
-		// console.log('exUser: ', exUser);
-		// console.log('rows: ', rows);
-		// console.log('fields: ', fields);
+		//console.log('exuer', exUser)
 
 		if(!exUser){
 			res.status(403);
@@ -70,7 +82,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 		const accessToken: string = jwt.sign({
 			id: exUser.id,
 			email: exUser.email,
-			nick: exUser.nick,
+			name : exUser.name,
 		}, accessSecret, {
 			expiresIn: '1m',
 		});
@@ -80,7 +92,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 		const refreshToken: string = jwt.sign({
 			id: exUser.id,
 			email: exUser.email,
-			nick: exUser.nick,
+			name: exUser.name,
 		}, refreshSecret, {
 			expiresIn: '300m',
 		});
@@ -106,14 +118,16 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 const refreshToken: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		const refreshToken: string = req.cookies.refreshToken;
-		const data: any = jwt.verify(refreshToken, process.env.REFRESH_SECRET || '');
+		const data: jwt.JwtPayload = jwt.verify(refreshToken, process.env.REFRESH_SECRET || '') as jwt.JwtPayload;
+
+		//console.log('data', data)
 		
 		const accessSecret: string = process.env.ACCESS_SECRET || " ";
 		
 		const accessToken: string = jwt.sign({
 			id: data.id,
 			email: data.email,
-			nick: data.nick,
+			name: data.name,
 		}, accessSecret, {
 			expiresIn: '1m',
 		});
@@ -165,16 +179,18 @@ const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextF
 
 		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
 		const exUser = rows[0];
-		console.log(rows);
 		
 		if (rows.length != 0) {
 			next();
 		}
+		else{
+			next('route');
+		}
 
 	}
 	catch(err){
-		console.log(2);
-		res.redirect('/');
+		const url = req.originalUrl
+		res.redirect(`${url}`);
 	}
 }
 
@@ -190,6 +206,9 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 		const exUser = rows[0];
 		if(rows.length != 0){
 			next('route');
+		}
+		else{
+			next();
 		}
 	}
 	catch(err){
