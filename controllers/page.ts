@@ -1,14 +1,11 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-//import Item from '../models/item';
 
-import { Item as itemType } from '../types/item';
-
-const renderMain: RequestHandler = (req: Request, res: Response) => {
+const renderMainNotLoggedIn: RequestHandler = (req: Request, res: Response) => {
 
 		res.render('index', {loginState: false});	
 };
 
-const renderMain2: RequestHandler = (req: Request, res: Response) => {
+const renderMainLoggedIn: RequestHandler = (req: Request, res: Response) => {
 		res.render('index', {loginState: true});	
 };
 
@@ -31,4 +28,4 @@ const logout: RequestHandler = (req, res) => {
 	}
 }
 
-export {renderMain, renderLogin, renderJoin, renderMain2, logout,};
+export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout,};
