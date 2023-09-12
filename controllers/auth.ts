@@ -2,7 +2,7 @@ import {RequestHandler, Request, Response, NextFunction} from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { RowDataPacket, FieldPacket } from "mysql2/promise";
+import { FieldPacket } from "mysql2/promise";
 import pool from "../models/db";
 
 import {user} from "../types/model"
