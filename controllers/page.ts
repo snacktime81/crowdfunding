@@ -1,4 +1,7 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
+import pool from "../models/db";
+import { item } from '../types/model';
+import {FieldPacket} from 'mysql2/promise';
 
 const renderMainNotLoggedIn: RequestHandler = (req: Request, res: Response) => {
 
