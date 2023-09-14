@@ -60,46 +60,31 @@
 						<p>원하시는 항목을 눌러보세요</p>
 					</header>
 					<div class="highlights">
-						<section>
-							<div class="content">
-								<header>
-									<a href="#" class="icon fa-vcard-o"><span class="label">Icon</span></a>
-									<h3>Feugiat consequat</h3>
-								</header>
-								<p>Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus.</p>
-							</div>
-						</section>
-						<section>
-							<div class="content">
-								<header>
-									<a href="#" class="icon fa-files-o"><span class="label">Icon</span></a>
-									<h3>Ante sem integer</h3>
-								</header>
-								<p>Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus.</p>
-							</div>
-						</section>
-						<section>
-							<div class="content">
-								<header>
-									<a href="#" class="icon fa-floppy-o"><span class="label">Icon</span></a>
-									<h3>Ipsum consequat</h3>
-								</header>
-								<p>Nunc lacinia ante nunc ac lobortis ipsum. Interdum adipiscing gravida odio porttitor sem non mi integer non faucibus.</p>
-							</div>
-						</section>
+						<!-- icon fa-varcard-o , fa-files-0, fa-floppy-o -->
+						{% for item in items %}
 							<section>
 								<div class="content">
 									<header>
-										<form action='/itme' method="GET">	
-								
-											<a href='/item' class="icon fa-line-chart"><span class="label">Icon</span></a>
-											<h3>아이템 올리기</h3>
-											
-										</form>
+										<a href="item/{{item.id}}" class = "icon fa-floppy-o"><span class="label">Icon</span></a>
+										<h3>{{item.name}}</h3>
 									</header>
-									<p>여러분들의 아이디어를 마음껏 알려보세요, 많은 사람들이 당신의 생각을 지지해 줄겁니다.</p>
+									<p>{{item.explanation}}</p>
 								</div>
 							</section>
+						{% endfor %}
+						<section>
+							<div class="content">
+								<header>
+									<form action='/itme' method="GET">	
+
+										<a href='/item' class="icon fa-line-chart"><span class="label">Icon</span></a>
+										<h3>아이템 올리기</h3>
+
+									</form>
+								</header>
+								<p>여러분들의 아이디어를 마음껏 알려보세요, 많은 사람들이 당신의 생각을 지지해 줄겁니다.</p>
+							</div>
+						</section>
 						<section>
 							<div class="content">
 								<header>
