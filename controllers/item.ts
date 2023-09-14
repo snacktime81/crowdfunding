@@ -45,11 +45,15 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	
 	const {id} = req.params;
 	
-	const query = 'SELECT * FROM ITEM WHERE id = (?)';
+	let query = 'SELECT * FROM ITEM WHERE id = (?)';
 	const dataId = [id];
 
 	const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
 	const item = items[0];
+
+	query = "UPDATE ITEM SET views = views + 1 WHERE ID = (?)";
+	
+	await pool.query(query, dataId);
 	
 	res.render('itemDetail', {item});
 }
