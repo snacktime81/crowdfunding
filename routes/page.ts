@@ -18,8 +18,4 @@ router.get('/join', renderJoin);
 router.get('/logout', logout);
 
 
-
-
-
-
 export default router;
