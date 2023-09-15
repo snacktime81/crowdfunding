@@ -29,22 +29,24 @@
 		</div>
 
 			<!-- Product Configuration -->
-		<div class="product-configuration">
+		<form action="item/postOrder" method="POST" >
+			<div class="product-configuration">
 
-			<!-- Cable Configuration -->
-			<div class="cable-config">
-				<span>Purchace Percent</span>
-				<div class="textbox">
-				  <input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()'>
+				<!-- Cable Configuration -->
+				<div class="cable-config">
+					<span>Purchace Percent</span>
+					<div class="textbox">
+					<input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()'>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Product Pricing -->
-		<p id='price' style="display:none;">{{item.price}}</p>
-		<div class="product-price">
-		  <a href="#" class="cart-btn" onclick='requestPay()'>Buy</a>
-		</div>
+			<!-- Product Pricing -->
+			<p id='price' style="display:none;">{{item.price}}</p>
+			<div class="product-price">
+			<a href="#" class="cart-btn" onclick='requestPay()'>Buy</a>
+			</div>
+		</form>
 	</div>
 	<script src='itemDetail.js'></script>
 	<script src="payment.js"></script>
