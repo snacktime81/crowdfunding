@@ -29,14 +29,15 @@
 		</div>
 
 			<!-- Product Configuration -->
-		<form action="item/postOrder" method="POST" >
+		<form action="/item/order" method="POST" >
 			<div class="product-configuration">
 
 				<!-- Cable Configuration -->
 				<div class="cable-config">
-					<span>Purchace Percent</span>
+					<span>Purchase Percent</span>
 					<div class="textbox">
-					<input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()'>
+						<input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()' name="purchasePercent" >
+						<input type="number" style="display:none" value="{{ item.id }}" name="id">
 					</div>
 				</div>
 			</div>
@@ -44,7 +45,7 @@
 			<!-- Product Pricing -->
 			<p id='price' style="display:none;">{{item.price}}</p>
 			<div class="product-price">
-			<a href="#" class="cart-btn" onclick='requestPay()'>Buy</a>
+				<input href="#" type="submit" class="cart-btn" onclick='requestPay()' value ="buy">
 			</div>
 		</form>
 	</div>
