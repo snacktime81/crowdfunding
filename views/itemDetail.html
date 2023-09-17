@@ -29,7 +29,7 @@
 		</div>
 
 			<!-- Product Configuration -->
-		<form action="/item/order" method="POST" >
+		<form action="#" method="POST" id="form">
 			<div class="product-configuration">
 
 				<!-- Cable Configuration -->
@@ -37,7 +37,6 @@
 					<span>Purchase Percent</span>
 					<div class="textbox">
 						<input type="number" min='1', max='{{item.percent}}' id="percent_input" onkeyup='getPercent()' name="purchasePercent" >
-						<input type="number" style="display:none" value="{{ item.id }}" name="id">
 					</div>
 				</div>
 			</div>
@@ -48,6 +47,32 @@
 				<input href="#" type="submit" class="cart-btn" onclick='requestPay()' value ="buy">
 			</div>
 		</form>
+		<script>
+			const form = document.getElementById('form');
+
+			form.addEventListener('submit', async(e) => {
+				e.preventDefault();
+				const itemId = window.location.pathname.substring(6);
+				let formData = new FormData(form);
+				formData.append('itemId', itemId);
+				
+				var object = {}
+				formData.forEach(function(value,key){
+					object[key]=value
+				})
+
+				let data = JSON.stringify(object)
+				console.log(data)
+				const response = await fetch("/item/order", {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: data
+				});
+				
+			});
+		</script>
 	</div>
 	<script src='itemDetail.js'></script>
 	<script src="payment.js"></script>
