@@ -50,11 +50,16 @@
 		<script>
 			const form = document.getElementById('form');
 
+			
+
 			form.addEventListener('submit', async(e) => {
 				e.preventDefault();
+				const totalPrice = document.getElementsByClassName('totalPrice')[0].innerHTML;
+				console.log(totalPrice.substring(0, totalPrice.length - 1))
 				const itemId = window.location.pathname.substring(6);
 				let formData = new FormData(form);
 				formData.append('itemId', itemId);
+				formData.append('price', totalPrice);
 				
 				var object = {}
 				formData.forEach(function(value,key){
