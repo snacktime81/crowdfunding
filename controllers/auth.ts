@@ -136,7 +136,6 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 			secure: false,
 			httpOnly: true,
 		});
-		
 		next('route');
 		
 	}
@@ -184,7 +183,8 @@ const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextF
 			next();
 		}
 		else{
-			next('route');
+			const url = req.originalUrl
+			res.redirect(`${url}`);
 		}
 
 	}
