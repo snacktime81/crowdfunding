@@ -1,17 +1,18 @@
-
-const span = document.getElementsByClassName('totalPrice');
-console.log(span)
-const amount = span.value;
-console.log(amount)
 IMP.init('imp03734354')
 
-function requestPay(name) {
+function requestPay() {
+	let itemName = document.getElementById('itemName').innerHTML;
+	const price = (document.getElementsByClassName('totalPrice')[0].innerHTML);
+	const priceNumber = Number(price.substring(0, price.length-1))
+
+	//console.log(priceNumber)
+
 	IMP.request_pay({
 		pg: "html5_inicis",
 		pay_method: "card",
 		merchant_uid: "merchant" + new Date().getTime(),
-		name: 'test',
-		amount: 100,
+		name: itemName,
+		amount: priceNumber,
 			
 	}, function(rsp) {
 		if(rsp.success){

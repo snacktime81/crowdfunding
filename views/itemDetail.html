@@ -24,7 +24,7 @@
 		<!-- Product Description -->
 		<div class="product-description">
 			<span><a href='/'> HOME </a></span>
-			<h1>{{item.name}}</h1>
+			<h1 id='itemName'>{{item.name}}</h1>
 			<p>{{item.explanation}}</p>
 		</div>
 
@@ -55,13 +55,13 @@
 			form.addEventListener('submit', async(e) => {
 				e.preventDefault();
 				const totalPrice = document.getElementsByClassName('totalPrice')[0].innerHTML;
-				console.log(totalPrice.substring(0, totalPrice.length - 1))
+				//console.log(totalPrice.substring(0, totalPrice.length - 1))
 				const itemId = window.location.pathname.substring(6);
 				let formData = new FormData(form);
 				formData.append('itemId', itemId);
 				formData.append('price', totalPrice);
 				
-				var object = {}
+				let object = {}
 				formData.forEach(function(value,key){
 					object[key]=value
 				})
