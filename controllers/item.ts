@@ -1,7 +1,7 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import {FieldPacket} from 'mysql2/promise';
-import { item } from '../types/model';
+import { user, item } from '../types/model';
 
 import pool from "../models/db";
 
@@ -17,7 +17,7 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 		
 		const accessToken: string = req.cookies.accessToken;
 		const user: any = jwt.verify(accessToken, process.env.ACCESS_SECRET || '');
-		console.log(user);
+		//console.log(user);
 		const userId = user.id;
 		
 		
@@ -58,4 +58,31 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	res.render('itemDetail', {item});
 }
 
-export {renderItem, postItem, renderItemList, renderItemId};
+const postOrder: RequestHandler = async(req, res) => {
+	try{
+		const purchasePercent = req.body.purchasePercent as number;
+		const itemId = req.body.itemId as number;
+		const price = req.body.price;
+		const priceNumber = (price.substring(0, price.length-1)) as number;
+		
+		//console.log(typeof purchasePercent, typeof itemId, typeof price);
+		
+		let query = "SELECT user_id FROM ITEM WHERE id = ?";
+		let data = [itemId];
+
+		const [userIds, fields]: [Omit<user, "email" | "name" | "password" | "authority">, FieldPacket[]] = await pool.query(query, data);
+
+		const userId = userIds[0].user_id;
+
+		query = "INSERT INTO `ORDER`(idea_id, user_id, purchase_percent, price) VALUES(?, ?, ?, ?)";
+		data = [itemId, userId, purchasePercent, priceNumber];
+
+		await pool.query(query, data);
+		res.status(200);
+	}
+	catch(err){
+		console.log(err);
+	}
+}
+
+export {renderItem, postItem, renderItemList, renderItemId, postOrder};
