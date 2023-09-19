@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderItemList, renderItem, postItem, renderItemId
+	renderItemList, renderItem, postItem, renderItemId, postOrder
 } from '../controllers/item';
 
 import{
@@ -19,5 +19,7 @@ router.post('/', refreshToken, loginAuth, postItem);
 router.get('/list', renderItemList);
 
 router.get('/:id', renderItemId);
+
+router.post('/order', postOrder);
 
 export default router;
