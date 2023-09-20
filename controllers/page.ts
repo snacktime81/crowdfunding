@@ -25,6 +25,10 @@ const renderJoin: RequestHandler = (req : Request, res: Response) => {
 	res.render('join');
 }
 
+const renderQandA: RequestHandler = (req, res) => {
+	res.render('qAndA')
+}
+
 const logout: RequestHandler = (req, res) => {
 	try{
 		res.cookie('accessToken', '');
@@ -36,4 +40,4 @@ const logout: RequestHandler = (req, res) => {
 	}
 }
 
-export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout,};
+export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout, renderQandA};
