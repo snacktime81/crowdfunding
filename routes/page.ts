@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderMainNotLoggedIn, renderLogin, renderJoin, renderMainLoggedIn, logout, renderQandA
+	renderMainNotLoggedIn, renderLogin, renderJoin, renderMainLoggedIn, logout
 } from '../controllers/page';
 
 import{
@@ -16,6 +16,5 @@ router.get('/', isLoggedIn, renderMainLoggedIn);
 router.get('/login', renderLogin);
 router.get('/join', renderJoin);
 router.get('/logout', logout);
-router.get('/qAndA', renderQandA);
 
 export default router;
