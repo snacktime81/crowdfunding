@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>item</title>
+  <link rel="stylesheet" href="item.css">
+</head>
+<body>
+  	<div class="container" id="container">
+		<form action="/QandA" method="POST">
+			<div class="form-container sign-in-container fset">
+
+				<h1>Question</h1>
+				<P>답변하는데 하루에서 이틀이 걸릴</P>
+			</div>
+			<div class="overlay-container">
+				<div class="overlay">
+					<div class="overlay-panel overlay-right">
+						 <textarea class="form-control" placeholder="Comments"  id="floatingTextarea2" name='question'></textarea>
+						 <label for="floatingTextarea2">Question</label>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div>
+		<form action="/" method="GET" class='HomeContainer' >
+			<input type='submit' value="HOME" id='homeButton'>
+		</form>
+	</div>
+</body>
+</html>
