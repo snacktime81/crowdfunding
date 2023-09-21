@@ -8,14 +8,14 @@
 </head>
 <body>
   	<div class="container" class="container" >
-		<form action="#" id="qForm">
+		<form action="/qAndA" method="POST" id="qForm">
 			<div class="form-container sign-in-container fset">
 				<h1>Question</h1>
 			</div>
 			<div class="overlay-container">
 				<div class="overlay">
 					<div class="overlay-panel overlay-right">
-						 <textarea class="form-control" placeholder="Comments"  id="floatingTextarea2" name='question'></textarea>
+						 <textarea class="form-control" placeholder="Comments"  id="floatingTextarea2" name='question' required></textarea>
 						 <input type="submit" value="Question" onclick="onQuestion()">
 					</div>
 				</div>
@@ -27,6 +27,5 @@
 			<input type='submit' value="HOME" id='homeButton'>
 		</form>
 	</div>
-	<script src="qAndA.js"></script>
 </body>
 </html>
