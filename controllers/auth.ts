@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 import { FieldPacket } from "mysql2/promise";
 import pool from "../models/db";
 
-import {user} from "../types/model"
+import {user} from "../types/model";
+import { CustomError } from '../types';
 
 dotenv.config();
 
@@ -84,7 +85,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			email: exUser.email,
 			name : exUser.name,
 		}, accessSecret, {
-			expiresIn: '1m',
+			expiresIn: '5m',
 		});
 		
 		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
@@ -129,7 +130,7 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 			email: data.email,
 			name: data.name,
 		}, accessSecret, {
-			expiresIn: '1m',
+			expiresIn: '5m',
 		});
 		
 		res.cookie('accessToken', accessToken, {
@@ -142,6 +143,73 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 	catch(err){
 
 		next();
+	}
+}
+
+const tokenCheck: RequestHandler = (req, res, next) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const refreshToken: string = req.cookies.refreshToken;
+
+		const accessSecret = process.env.ACCESS_SECRET || '';
+		const refreshSecret = process.env.REFRESH_SECRET ||'';	
+
+		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때 만료와 다르다
+			const error: CustomError = new Error(`로그인이 필요한 페이지 입니다.`);
+			next(error);
+		}
+
+		const accessData : payload = jwt.verify(accessToken, accessSecret) as payload;
+
+		try{ // accessToken은 정상 refreshToken 정상
+			const refreshData : payload = jwt.verify(refreshToken, refreshSecret) as payload;
+			next()
+		}
+		catch(err2){// accessTken은 정상 refreshToken은 만료 또는 위조
+			const refreshToken: string = jwt.sign({
+				id: accessData.id,
+				email: accessData.email,
+				name: accessData.name,
+			}, accessSecret, {
+				expiresIn: '300m',
+			});
+			
+			res.cookie('refreshToken', refreshToken, {
+				secure: false,
+				httpOnly: true,
+			});
+			next()
+		}
+	
+	}
+	catch(err){ // accessToken에서 문제 발생
+		try{
+			const refreshToken: string = req.cookies.refreshToken;
+
+			const refreshSecret = process.env.REFRESH_SECRET ||'';
+			const accessSecret = process.env.ACCESS_SECRET || '';
+
+			const refreshData : payload = jwt.verify(refreshToken, refreshSecret) as payload;
+
+			const accessToken: string = jwt.sign({
+				id: refreshData.id,
+				email: refreshData.email,
+				name: refreshData.name,
+			}, accessSecret, {
+				expiresIn: '5m',
+			});
+			
+			res.cookie('accessToken', accessToken, {
+				secure: false,
+				httpOnly: true,
+			});
+			next()
+
+		}
+		catch(err3){ // accessToken, refreshToken 둘 다 만료 또는 위조
+			const error: CustomError = new Error(`로그인이 필요한 페이지 입니다.`);
+			next(error);
+		}
 	}
 }
 
@@ -218,4 +286,4 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 
 
 
-export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken};
+export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck};
