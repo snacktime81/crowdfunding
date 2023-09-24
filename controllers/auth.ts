@@ -85,7 +85,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			email: exUser.email,
 			name : exUser.name,
 		}, accessSecret, {
-			expiresIn: '5m',
+			expiresIn: '1m',
 		});
 		
 		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
@@ -130,7 +130,7 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 			email: data.email,
 			name: data.name,
 		}, accessSecret, {
-			expiresIn: '5m',
+			expiresIn: '1m',
 		});
 		
 		res.cookie('accessToken', accessToken, {
@@ -141,9 +141,22 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 		
 	}
 	catch(err){
-
 		next();
 	}
+}
+
+const verify = (token: string, secret: string) => {
+    try{    
+		const data: payload = jwt.verify(token, secret) as payload;
+		return data;
+    }
+	catch(err){
+			return 'expired';
+    }
+}
+
+const isExpired = (data: payload | 'expired'): data is 'expired' => {
+	return data === 'expired';
 }
 
 const tokenCheck: RequestHandler = (req, res, next) => {
@@ -152,64 +165,49 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		const refreshToken: string = req.cookies.refreshToken;
 
 		const accessSecret = process.env.ACCESS_SECRET || '';
-		const refreshSecret = process.env.REFRESH_SECRET ||'';	
+		const refreshSecret = process.env.REFRESH_SECRET ||'';
 
-		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때 만료와 다르다
-			const error: CustomError = new Error(`로그인이 필요한 페이지 입니다.`);
-			next(error);
+		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때
+			res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 		}
 
-		const accessData : payload = jwt.verify(accessToken, accessSecret) as payload;
+		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
+		const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
 
-		try{ // accessToken은 정상 refreshToken 정상
-			const refreshData : payload = jwt.verify(refreshToken, refreshSecret) as payload;
-			next()
+		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
+			if(isExpired(refreshData)){ // refreshToken 또한 만료 되었을 떄
+				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+			}
+			else{ // refreshToken으로 accessToken 재발급
+				const accessToken: string = jwt.sign({
+					id: refreshData.id,
+					email: refreshData.email,
+					name: refreshData.name,
+				}, accessSecret, {
+					expiresIn: '5m',
+				});
+				
+				res.cookie('accessToken', accessToken, {
+					secure: false,
+					httpOnly: true,
+				});
+				res.status(200);
+				next()
+			}
 		}
-		catch(err2){// accessTken은 정상 refreshToken은 만료 또는 위조
-			const refreshToken: string = jwt.sign({
-				id: accessData.id,
-				email: accessData.email,
-				name: accessData.name,
-			}, accessSecret, {
-				expiresIn: '300m',
-			});
-			
-			res.cookie('refreshToken', refreshToken, {
-				secure: false,
-				httpOnly: true,
-			});
-			next()
+		else{ // accessToken이 남아있을떄
+			if(isExpired(refreshData)){ // refreshToken이 만료되었을 때
+				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+			}
+			else{ // 로그인이 되어있는 상태
+				res.status(200);
+				next()
+			}
 		}
-	
 	}
-	catch(err){ // accessToken에서 문제 발생
-		try{
-			const refreshToken: string = req.cookies.refreshToken;
-
-			const refreshSecret = process.env.REFRESH_SECRET ||'';
-			const accessSecret = process.env.ACCESS_SECRET || '';
-
-			const refreshData : payload = jwt.verify(refreshToken, refreshSecret) as payload;
-
-			const accessToken: string = jwt.sign({
-				id: refreshData.id,
-				email: refreshData.email,
-				name: refreshData.name,
-			}, accessSecret, {
-				expiresIn: '5m',
-			});
-			
-			res.cookie('accessToken', accessToken, {
-				secure: false,
-				httpOnly: true,
-			});
-			next()
-
-		}
-		catch(err3){ // accessToken, refreshToken 둘 다 만료 또는 위조
-			const error: CustomError = new Error(`로그인이 필요한 페이지 입니다.`);
-			next(error);
-		}
+	catch(err){
+		const error = new Error(err as string);
+		next(error);
 	}
 }
 
@@ -231,8 +229,7 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		
 	}
 	catch(err){
-		res.status(500);
-		res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/';</script>");
+		res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 	}
 }
 
@@ -283,7 +280,5 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 		next();
 	}
 }
-
-
 
 export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck};
