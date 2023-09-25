@@ -168,7 +168,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		const refreshSecret = process.env.REFRESH_SECRET ||'';
 
 		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때
-			res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+			return res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 		}
 
 		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
