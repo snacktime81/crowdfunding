@@ -27,7 +27,9 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 		res.redirect('/item');
 	}
 	catch(err){
-		console.error(err);
+		if((err as Error).message === 'Data too long for column \'name\' at row 1'){
+			res.send(`<script>alert("이름이 너무 깁니다."); location.reload(ture);</script>`);
+		}
 	}
 }
 
