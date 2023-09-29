@@ -19,4 +19,12 @@ interface item extends RowDataPacket{
     deadline: string
 }
 
-export {user, item}
+interface qAndA extends RowDataPacket{
+    id: number,
+    user_id: number,
+    question: string,
+    answer: string,
+    respondent: number
+}
+
+export {user, item, qAndA}
