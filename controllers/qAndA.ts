@@ -2,10 +2,16 @@ import express from 'express';
 import pool from "../models/db";
 import { FieldPacket } from "mysql2/promise";
 import jwt from 'jsonwebtoken';
-import {user} from "../types/model";
+import {user, qAndA} from "../types/model";
 
 import dotenv from 'dotenv';
 dotenv.config();
+
+interface payload extends jwt.JwtPayload{
+	id: number,
+	email: string,
+	name: string
+}
 
 const renderQAndA: express.RequestHandler = (req, res) => {
     res.render('qAndA');
@@ -33,4 +39,22 @@ const postQAndA: express.RequestHandler = async(req, res) => {
     }
 }
 
-export { renderQAndA, postQAndA }
+const renderQAndAList: express.RequestHandler = async(req , res) => {
+
+    const token = req.cookies.accessToken;
+    const accessSecret = process.env.ACCESS_SECRET || "";
+    const user: payload = jwt.verify(token, accessSecret) as payload;
+    const userId = user.id;
+
+	let query = "SELECT * FROM Q_AND_A WHERE user_id = (?);";
+    const data = [userId];
+
+	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query, data);
+    const qAndA = rows;
+
+	res.render('qAndAList', {items: qAndA});
+}
+
+const renderQAndAId = () => {};
+
+export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList }
