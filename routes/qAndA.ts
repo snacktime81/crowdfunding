@@ -4,7 +4,7 @@ import{
 } from '../controllers/qAndA';
 
 import{
-	loginAuth, refreshToken, isLoggedIn, isNotLoggedIn, tokenCheck
+	loginAuth, refreshToken, isLoggedIn, isNotLoggedIn, tokenCheck, renderQAndAId
 } from '../controllers/auth';
 
 const router = express.Router();
@@ -12,5 +12,8 @@ const router = express.Router();
 router.get('/', tokenCheck, renderQAndA);
 
 router.post('/', tokenCheck, postQAndA);
+
+router.get('/:id', renderQAndAId);
+
 
 export default router;
