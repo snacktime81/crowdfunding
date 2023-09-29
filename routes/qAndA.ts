@@ -13,7 +13,7 @@ router.get('/', tokenCheck, renderQAndA);
 
 router.post('/', tokenCheck, postQAndA);
 
-router.get('/list', renderQAndAList)
+router.get('/list', tokenCheck, renderQAndAList)
 
 router.get('/:id', renderQAndAId);
 
