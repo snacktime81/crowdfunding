@@ -11,6 +11,6 @@ const router = express.Router();
 
 router.get('/', tokenCheck, renderQAndA);
 
-router.post('/',  postQAndA);
+router.post('/', tokenCheck, postQAndA);
 
 export default router;
