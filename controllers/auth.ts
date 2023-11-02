@@ -48,7 +48,8 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		data = [email, name, hash];
 		
 		await pool.query(query, data);
-
+		
+		res.status(200)
 		return res.redirect('/');
 	}
 	catch(err){
