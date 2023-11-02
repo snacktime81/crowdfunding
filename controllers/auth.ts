@@ -34,6 +34,7 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		const exUser = rows[0];
 
 		if(exUser){
+			res.status(409);
 			return res.send(
 				  `<script>
 					alert('이미 존재하는 email입니다.');
