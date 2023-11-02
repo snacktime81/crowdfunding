@@ -63,7 +63,6 @@ const renderQAndAId: express.RequestHandler = async(req, res) => {
 
 	const [rows, fields]:[qAndA[], FieldPacket[]] = await pool.query(query, dataId);
 	const question = rows[0];
-	console.log(question);
 	
 	res.render('qAndADetail', {question});
 };
