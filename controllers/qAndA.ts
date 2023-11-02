@@ -55,6 +55,17 @@ const renderQAndAList: express.RequestHandler = async(req , res) => {
 	res.render('qAndAList', {items: qAndA});
 }
 
-const renderQAndAId = () => {};
+const renderQAndAId: express.RequestHandler = async(req, res) => {
+    const {id} = req.params;
+	
+	let query = 'SELECT * FROM Q_AND_A WHERE id = (?)';
+	const dataId = [id];
+
+	const [rows, fields]:[qAndA[], FieldPacket[]] = await pool.query(query, dataId);
+	const question = rows[0];
+	console.log(question);
+	
+	res.render('qAndADetail', {question});
+};
 
 export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList }
