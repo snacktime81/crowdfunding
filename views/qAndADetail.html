@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>item</title>
+  <link rel="stylesheet" href="qAndA.css">
+</head>
+<body>
+  	<div class="container" class="container" >
+		<div class="form-container sign-in-container fset">
+			<h1>Question</h1>
+			<p>
+				{{question.question}}
+			</p>
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				<div class="overlay-panel overlay-right">
+					<h1>
+						Answer
+					</h1>
+			
+						{% if question.answer == null %}
+						<P>
+							no answer
+						</P>
+						{% else %}
+						<p>
+						 {{question.answer}}
+						</p>
+						{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div>
+	</div>
+</body>
+</html>
