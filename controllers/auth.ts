@@ -24,8 +24,6 @@ interface payload extends jwt.JwtPayload{
 
 const postUser: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
-		
-		
 		const {name, email, password}: reqBody = req.body;
 		let query = "SELECT id FROM USER WHERE email = (?)";
 		let data = [email];
@@ -49,10 +47,11 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		
 		await pool.query(query, data);
 		
-		res.status(200)
+		res.status(200);
 		return res.redirect('/');
 	}
 	catch(err){
+		res.status(500)
 		console.error(err);
 		return next(err);
 	}
@@ -64,14 +63,14 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 		const {email, password}: Omit<reqBody, 'name'> = req.body;
 
 		let query = "SELECT * FROM USER WHERE email = (?)";
-		let data = [email]
+		let data = [email];
 
 		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
 		const exUser = rows[0];
 		//console.log('exuer', exUser)
 
 		if(!exUser){
-			res.status(403);
+			res.status(409);
 			return res.send(
 				  `<script>
 					alert('없는 계정입니다.');
@@ -109,10 +108,11 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 			httpOnly: true,
 		})
 
-		res.status(200)
-		res.redirect('/')
+		res.status(200);
+		res.redirect('/');
 	}
 	catch(err){
+		res.status(500);
 		console.error(err);
 		return next(err);
 	}
@@ -170,6 +170,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		const refreshSecret = process.env.REFRESH_SECRET ||'';
 
 		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때
+			res.status(401);
 			return res.send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 		}
 
@@ -178,6 +179,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 
 		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
 			if(isExpired(refreshData)){ // refreshToken 또한 만료 되었을 떄
+				res.status(401);
 				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // refreshToken으로 accessToken 재발급
@@ -199,6 +201,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		}
 		else{ // accessToken이 남아있을떄
 			if(isExpired(refreshData)){ // refreshToken이 만료되었을 때
+				res.status(401);
 				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // 로그인이 되어있는 상태
@@ -208,6 +211,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		}
 	}
 	catch(err){
+		res.status(500);
 		const error = new Error(err as string);
 		next(error);
 	}
@@ -231,7 +235,7 @@ const loginAuth: RequestHandler = async(req: Request, res: Response, next: NextF
 		
 	}
 	catch(err){
-		res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+		res.status(409).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 	}
 }
 
