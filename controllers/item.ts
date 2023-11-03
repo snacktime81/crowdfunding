@@ -9,7 +9,7 @@ const renderItem: RequestHandler = (req : Request, res: Response) => {
 	res.render('item');
 }
 
-const postItem: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
+const postItem: RequestHandler = async(req: Request, res: Response) => {
 	try{
 
 		const {name, price, percent, deadline, image, describe} = req.body;
@@ -24,11 +24,13 @@ const postItem: RequestHandler = async(req: Request, res: Response, next: NextFu
 		const data = [userId, name, price, percent, describe, image, deadline];
 		
 		await pool.query(query, data);
-		res.redirect('/item');
+
+		
+		res.status(200).redirect('/item');
 	}
 	catch(err){
 		if((err as Error).message === 'Data too long for column \'name\' at row 1'){
-			res.send(`<script>alert("이름이 너무 깁니다."); location.reload(ture);</script>`);
+			res.status(400).send(`<script>alert("이름이 너무 깁니다."); location.reload(ture);</script>`);
 		}
 	}
 }
@@ -40,7 +42,7 @@ const renderItemList: RequestHandler = async(req : Request, res: Response) => {
 	const [rows, fields]: [item[], FieldPacket[]] = await pool.query(query);
     const items = rows;
 
-	res.render('itemList', {items: items});
+	res.status(200).render('itemList', {items: items});
 }
 
 const renderItemId: RequestHandler = async(req: Request, res: Response) => {
@@ -57,7 +59,7 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	
 	await pool.query(query, dataId);
 	
-	res.render('itemDetail', {item});
+	res.status(200).render('itemDetail', {item});
 }
 
 const postOrder: RequestHandler = async(req, res) => {
@@ -83,6 +85,7 @@ const postOrder: RequestHandler = async(req, res) => {
 		res.status(200);
 	}
 	catch(err){
+		res.status(500);
 		console.log(err);
 	}
 }
