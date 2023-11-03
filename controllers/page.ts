@@ -7,22 +7,22 @@ const renderMainNotLoggedIn: RequestHandler = async(req: Request, res: Response)
 	const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
 	const [items, fields]: [item[], FieldPacket[]] = await pool.query(query);
 
-	res.render('index', {loginState: false, items: items});	
+	res.status(200).render('index', {loginState: false, items: items});	
 };
 
 const renderMainLoggedIn: RequestHandler = async(req: Request, res: Response) => {
 	const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
 	const [items, fields]: [item[], FieldPacket[]] = await pool.query(query);
 	
-	res.render('index', {loginState: true, items: items});	
+	res.status(200).render('index', {loginState: true, items: items});	
 };
 
 const renderLogin: RequestHandler = (req : Request, res: Response) => {
-	res.render('login');
+	res.status(200).render('login');
 }
 
 const renderJoin: RequestHandler = (req : Request, res: Response) => {
-	res.render('join');
+	res.status(200).render('join');
 }
 
 const logout: RequestHandler = (req, res) => {
