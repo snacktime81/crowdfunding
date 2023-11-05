@@ -22,9 +22,9 @@ nunjucks.configure('views', {
   watch: true,
 });
 
-
+const rootDir = path.join(__dirname, '..');
 app.use(morgan('dev'));
-app.use(express.static(path.join('/workspace/crowdfunding', "/public")));
+app.use(express.static(path.join(rootDir, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
