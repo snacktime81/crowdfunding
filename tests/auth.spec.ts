@@ -7,19 +7,27 @@ import {app} from '../src/app';
 
 describe('POST /join', () => {
 	beforeAll(async() => {
-		await setupTestDatabase();
+		return await setupTestDatabase();
 	});
 	afterAll(async() => {
-		await cleanupTestDatabase();
+		return await cleanupTestDatabase();
 	})
-	test('성공시', (done) => {
-		request(app)
+	test('성공시', async() => {
+		await request(app)
 		.post('/auth/join')
 		.send({name: 'test2',
 			   email: 'test2@test.com',
 			   password: 'testpw2'
 			  })
-		.expect(302, done);
+		.expect(302);
 	});
-	test
+	test('이미 계정이 생성되어 있을때', async() => {
+		await request(app)
+		.post('/auth/join')
+		.send({name: 'test2',
+			   email: 'test2@test.com',
+			   password: 'testpw2'
+			  })
+		.expect(409);
+	});
 });
