@@ -1,6 +1,7 @@
 import mysql from 'mysql2/promise';
 import configObj from '../config/config.js';
-const config = configObj['development'];
+const state = process.env.NODE_ENV;
+const config = configObj[state];
 
 
 const pool = mysql.createPool(config);

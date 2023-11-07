@@ -11,7 +11,7 @@ module.exports = {
   test: {
     user: "root",
     password: process.env.DB_PASSWORD,
-    database: "startfunding",
+    database: "startfunding_test",
     host: "127.0.0.1",
     connectionLimit: 30,
   },

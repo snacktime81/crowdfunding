@@ -23,7 +23,10 @@ nunjucks.configure('views', {
 });
 
 const rootDir = path.join(__dirname, '..');
-app.use(morgan('dev'));
+
+if(process.env.NODE_ENV !== 'test'){
+	app.use(morgan('dev'));
+}
 app.use(express.static(path.join(rootDir, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,9 +55,4 @@ const errorHandler: ErrorRequestHandler = (err: CustomError, req: express.Reques
 };
 app.use(errorHandler);
 
-
-
-app.listen(app.get('port'), () => {
-	console.log(app.get('port'), '번 포트에서 대기중');
-
-});
+export {app}
