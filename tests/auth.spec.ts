@@ -19,7 +19,8 @@ describe('POST /join', () => {
 			   email: 'test2@test.com',
 			   password: 'testpw2'
 			  })
-		.expect(302);
+		.expect(302)
+		.expect('Location', '/');
 	});
 	test('이미 계정이 생성되어 있을때', async() => {
 		await request(app)
