@@ -16,7 +16,7 @@ describe('GET /FAQ', () => {
 		const [rows, fields] : [user[], FieldPacket[]] = await pool.query("SELECT id FROM USER");
 		const userId = rows[0].id;
 		
-		await pool.query('INSERT INTO Q_AND_A(user_id, question, answer, respondent) VALUES(?, "TEST", NULL, NULL)', userId)
+		await pool.query('INSERT INTO Q_AND_A(user_id, question, answer, respondent) VALUES(?, "TEST", "yes", 20)', userId)
 		
 		const [qs, fields2] : [any[], FieldPacket[]] = await pool.query("SELECT id FROM Q_AND_A");
 		const qId = qs[0].id;
@@ -27,9 +27,9 @@ describe('GET /FAQ', () => {
 		await cleanupTestDatabase();
 	})
 	test('성공시', async() => {
-		const res = await request(app)
+		await request(app)
 		.get('/FAQ')
-		
-		console.log(res.body);
+		.expect(200)
+		.expect({faq_id:1, qusetion:'TEST', answer: 'yes', respondent:20 })
 	});
 });
