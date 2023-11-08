@@ -67,4 +67,13 @@ const renderQAndAId: express.RequestHandler = async(req, res) => {
 	res.render('qAndADetail', {question});
 };
 
-export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList }
+const renderFAQList = async(req, res) => {
+	let query = "SELECT faq_id, question FROM FAQ;";
+
+	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query);
+    const qAndA = rows;
+
+	res.render('FAQList', {items: qAndA});
+}
+
+export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList }

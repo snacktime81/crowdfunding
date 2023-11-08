@@ -1,6 +1,6 @@
 import express from 'express';
 import{
-	renderQAndA, postQAndA, renderQAndAId, renderQAndAList
+	renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList
 } from '../controllers/qAndA';
 
 import{
@@ -16,6 +16,8 @@ router.post('/', tokenCheck, postQAndA);
 router.get('/list', tokenCheck, renderQAndAList)
 
 router.get('/:id', renderQAndAId);
+
+router.get('/FAQ', renderFAQList)
 
 
 export default router;
