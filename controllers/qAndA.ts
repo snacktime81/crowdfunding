@@ -71,9 +71,9 @@ const renderFAQList = async(req, res) => {
 	let query = "SELECT faq_id, question FROM FAQ;";
 
 	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query);
-    const qAndA = rows;
+    const FAQ = rows;
 
-	res.render('FAQList', {items: qAndA});
+	res.render('FAQList', {items: FAQ});
 }
 
 export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList }
