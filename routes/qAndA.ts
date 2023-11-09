@@ -15,9 +15,11 @@ router.post('/', tokenCheck, postQAndA);
 
 router.get('/list', tokenCheck, renderQAndAList)
 
+router.get('/FAQ', renderFAQList)
+
 router.get('/:id', renderQAndAId);
 
-router.get('/FAQ', renderFAQList)
+
 
 
 export default router;

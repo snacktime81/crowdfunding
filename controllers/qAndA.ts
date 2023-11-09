@@ -67,8 +67,10 @@ const renderQAndAId: express.RequestHandler = async(req, res) => {
 	res.render('qAndADetail', {question});
 };
 
-const renderFAQList = async(req, res) => {
-	let query = "SELECT faq_id, question FROM FAQ;";
+const renderFAQList: express.RequestHandler = async(req, res) => {
+	let query = `SELECT f.faq_id, q.question 
+				FROM FAQ f INNER JOIN Q_AND_A q
+				ON f.qa_id = q.id;`;
 
 	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query);
     const FAQ = rows;
