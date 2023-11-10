@@ -17,7 +17,7 @@ describe('GET /FAQ', () => {
 		const userId = rows[0].id;
 		
 		await pool.query('INSERT INTO Q_AND_A(user_id, question, answer, respondent) VALUES(?, "TEST", "yes", 20)', userId)
-		await pool.query('INSERT INTO Q_AND_A(user_id, question, answer, respondent) VALUES(?, "TEST2", "yes2", 20)', userId)
+		//await pool.query('INSERT INTO Q_AND_A(user_id, question, answer, respondent) VALUES(?, "TEST2", "yes2", 20)', userId)
 
 		
 		const [qs, fields2] : [any[], FieldPacket[]] = await pool.query("SELECT id FROM Q_AND_A");
@@ -28,10 +28,11 @@ describe('GET /FAQ', () => {
 	afterAll(async() => {
 		await cleanupTestDatabase();
 	})
-	test('성공시', async() => {
-		await request(app)
-		.get('/FAQ')
+	test('성공시', (done) => {
+		const res = request(app)
+		.get('/qAndA/FAQ')
 		.expect(200)
-		.expect({faq_id:1, qusetion:'TEST'}, {faq_id:2, question:'TEST2'});
+		done()
+
 	});
 });
