@@ -40,24 +40,11 @@ const logout: RequestHandler = (req, res) => {
 	}
 }
 
-const getUserToToken: (arg: string) => Promise<user> = async(accessToken) => {
-	const data: payload = jwt.verify(accessToken, process.env.ACCESS_SECRET || '') as payload;
 
-	let query = "SELECT id FROM USER WHERE id = (?)";
-	let dataId = [data.id]
 
-	const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
-	const exUser: user = rows[0];
-	console.log('ex: ', exUser)
-	
-	return exUser
-}
-
-const renderProfile: RequestHandler = (req, res) => {
+const renderProfile: RequestHandler = async(req, res) => {
 	try{
-		const accessToken: string = req.cookies.accessToken;
-		const user = getUserToToken(accessToken);
-		console.log(user.then((req) => console.log('re: ',req)))
+
 		res.status(302).render('profile');
 	}
 	catch(err){
