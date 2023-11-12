@@ -56,12 +56,23 @@ const renderProfile: RequestHandler = async(req, res) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const user = await getUserToToken(accessToken);
-		console.log(user)
-		res.status(302).render('profile');
+		
+		res.status(302).render('profile', {user: user});
 	}
 	catch(err){
 		res.status(500);
 	}
 }
 
-export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout, renderProfile};
+const renderUser: RequestHandler = async(req, res) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const user = await getUserToToken(accessToken);
+		res.status(302).render('user', {user: user})
+	}
+	catch(err){
+		res.status(500);
+	}
+}
+
+export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout, renderProfile, renderUser};
