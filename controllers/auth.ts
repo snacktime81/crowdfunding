@@ -5,22 +5,11 @@ import dotenv from 'dotenv';
 import { FieldPacket } from "mysql2/promise";
 import pool from "../models/db";
 
-import {user} from "../types/model";
+import {user, payload, reqBody} from "../types/model";
 import { CustomError } from '../types';
 
 dotenv.config();
 
-interface reqBody{
-	name: string;
-	email: string;
-	password: string;
-}
-
-interface payload extends jwt.JwtPayload{
-	id: number,
-	email: string,
-	name: string
-}
 
 const postUser: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{

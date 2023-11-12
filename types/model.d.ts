@@ -1,4 +1,5 @@
 import { RowDataPacket, FieldPacket } from "mysql2/promise";
+import jwt from 'jsonwebtoken';
 
 interface user extends RowDataPacket{
     id: nubmer,
@@ -27,4 +28,15 @@ interface qAndA extends RowDataPacket{
     respondent: number
 }
 
-export {user, item, qAndA}
+interface reqBody{
+	name: string;
+	email: string;
+	password: string;
+}
+
+interface payload extends jwt.JwtPayload{
+	id: number,
+	email: string,
+	name: string
+}
+export {user, item, qAndA, reqBody, payload}
