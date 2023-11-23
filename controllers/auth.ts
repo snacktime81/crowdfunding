@@ -46,6 +46,25 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 	}
 }
 
+const putUser: RequestHandler = async(req, res) => {
+	try{
+		const {name, email, password}: reqBody = req.body;
+		const hash = await bcrypt.hash(password, 12);
+
+		const id = req.params.id
+
+		const query = "UPDATE USER SET name = (?), email = (?), password = (?) WHERE ID = (?)";
+		const data = [name, email, hash, id];
+
+		await pool.query(query, data);
+		res.status(200).redirect(`/${id}`)
+	}
+	catch(err){
+		res.status(500)
+		console.log(err)
+	}
+}
+
 const postLogin: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		
@@ -194,7 +213,6 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // 로그인이 되어있는 상태
-				res.status(200);
 				next()
 			}
 		}
@@ -276,4 +294,4 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 	}
 }
 
-export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck};
+export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck, putUser};
