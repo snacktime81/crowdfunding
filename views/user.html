@@ -59,7 +59,7 @@
 
 <div class="container">
     <h2>User Profile</h2>
-    <form action="/{{user.id}}" method="PUT">
+    <form method="POST" action="/auth/{{user.id}}?_method=DELETE">
         <label for="username">Name: {{ user.name }}</label>
         <input type="text" id="username" name="username" placeholder="New Name">
 
