@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import path from 'path';
 import dotenv from 'dotenv';
 import nunjucks from 'nunjucks';
-import { CustomError } from '../types';
+import methodOverride from 'method-override';
 
 dotenv.config();
 import pageRouter from '../routes/page';
@@ -12,6 +12,7 @@ import authRouter from '../routes/auth';
 import itemRouter from '../routes/item';
 import qAndARouter from '../routes/qAndA';
 import {loginAuth} from '../controllers/auth';
+import { CustomError } from '../types';
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
@@ -31,7 +32,7 @@ app.use(express.static(path.join(rootDir, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
+app.use(methodOverride('_method'))
 
 
 app.use('/', pageRouter);
