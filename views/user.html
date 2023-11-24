@@ -4,76 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            text-align: center;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 8px;
-        }
-
-        input {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        button {
-            background-color: #4caf50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="user.css">
+    
 </head>
 <body>
+    <div class="container">
+        <h2>User Profile</h2>
+        <form method="POST" action="/auth/{{user.id}}?_method=PUT">
+            <label for="name">Name: {{ user.name }}</label>
+            <input type="text" id="username" name="name" placeholder="New Name">
 
-<div class="container">
-    <h2>User Profile</h2>
-    <form method="POST" action="/auth/{{user.id}}?_method=PUT">
-        <label for="name">Name: {{ user.name }}</label>
-        <input type="text" id="username" name="name" placeholder="New Name">
+            <label for="email">Email: {{ user.email }}</label>
+            <input type="email" id="email" name="email" placeholder="New Email">
 
-        <label for="email">Email: {{ user.email }}</label>
-        <input type="email" id="email" name="email" placeholder="New Email">
+            <label for="password">Password </label>
+            <input type="password" id="password" name="password" placeholder="New Password">
 
-        <label for="password">Password </label>
-        <input type="password" id="password" name="password" placeholder="New Password">
-
-        <button type="submit">Save Profile</button>
-    </form>
-</div>
-
-
-
+            <button type="submit">Save Profile</button>
+        </form>
+        <form style="margin-top: 20px; ">
+            <button type="submit" class='b2' onclick='userDelete()'>Delete Profile</button>
+        </form>
+    </div>
+    <script src="user.js"></script>
 </body>
 </html>
