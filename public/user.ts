@@ -4,7 +4,7 @@ async function userDelete() {
     const userId: string = window.location.pathname;
     console.log("유저아이디", userId)
 
-    let response = await fetch(`/${userId}`, {
+    let response = await fetch(`/auth/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json;charset=utf-8'
