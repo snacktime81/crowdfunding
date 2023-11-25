@@ -65,6 +65,23 @@ const putUser: RequestHandler = async(req, res) => {
 	}
 }
 
+const deleteUser: RequestHandler = async(req, res) => {
+	try{
+		const password: string = req.body;
+		const id: number = req.params.id as unknown as number
+
+		const query = "DELETE FROM USER WHERE ID = (?) cascade";
+		const data = [id]
+
+		await pool.query(query, data);
+		res.status(303).redirect(`/${id}`)
+	}
+	catch(err){
+		res.status(500)
+		console.log(err)
+	}
+}
+
 const postLogin: RequestHandler = async(req: Request, res: Response, next: NextFunction) => {
 	try{
 		
@@ -294,4 +311,4 @@ const isNotLoggedIn: RequestHandler = async(req: Request, res: Response, next:Ne
 	}
 }
 
-export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck, putUser};
+export {postUser, postLogin, loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck, putUser, deleteUser};
