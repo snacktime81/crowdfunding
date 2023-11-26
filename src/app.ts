@@ -35,10 +35,11 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(methodOverride('_method'))
 
 
-app.use('/', pageRouter);
+
 app.use('/auth', authRouter);
 app.use('/item', itemRouter);
 app.use('/qAndA', qAndARouter)
+app.use('/', pageRouter);
 
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   const error: CustomError = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);

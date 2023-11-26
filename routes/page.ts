@@ -19,7 +19,6 @@ router.get('/logout', logout);
 
 router.get('/profile', tokenCheck, renderProfile);
 
-
 router.get('/:id', tokenCheck, renderUser)
 
 

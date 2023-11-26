@@ -18,8 +18,8 @@ router.post('/', refreshToken, loginAuth, postItem);
 
 router.get('/list', renderItemList);
 
-router.get('/:id', renderItemId);
-
 router.post('/order', postOrder);
+
+router.get('/:id', renderItemId);
 
 export default router;
