@@ -65,15 +65,17 @@ const putUser: RequestHandler = async(req, res) => {
 	}
 }
 
-const deleteUser: RequestHandler = async(req, res) => {
+const deleteUser: RequestHandler = async(req, res) => { 
 	try{
 		const password: string = req.body;
 		const id: number = req.params.id as unknown as number
 
-		const query = "DELETE FROM USER WHERE ID = (?) cascade";
+		const query = "DELETE FROM USER WHERE ID = (?)";
 		const data = [id]
 
 		await pool.query(query, data);
+		res.cookie('accessToken', '');
+		res.cookie('refreshToken', '');
 		res.status(303).redirect(`/${id}`)
 	}
 	catch(err){
@@ -284,8 +286,7 @@ const isLoggedIn: RequestHandler = async(req: Request, res: Response, next:NextF
 
 	}
 	catch(err){
-		const url = req.originalUrl
-		res.redirect(`${url}`);
+		next(err);
 	}
 }
 
