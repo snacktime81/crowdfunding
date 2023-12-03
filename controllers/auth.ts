@@ -57,7 +57,7 @@ const putUser: RequestHandler = async(req, res) => {
 		const data = [name, email, hash, id];
 
 		await pool.query(query, data);
-		res.redirect(200, `/${id}`)
+		res.redirect(303, `/${id}`)
 	}
 	catch(err){
 		res.status(500)
@@ -77,15 +77,16 @@ const deleteUser: RequestHandler = async(req, res) => {
 
 		const [rows, fields] : [user[], FieldPacket[]] = await(pool.query(query, data));
 		const origianlPw = rows[0].password
-		console.log(hash, origianlPw)
-		if(hash === origianlPw){
+		if(bcrypt.compareSync(hash, origianlPw)){
 			query = "DELETE FROM USER WHERE ID = (?)";	
 			await pool.query(query, data);
 			res.cookie('accessToken', '');
 			res.cookie('refreshToken', '');
+			console.log('yes')
 			res.redirect(303, '/');
 		} else{
-			res.redirect(302, `/${id}`);
+			console.log('no')
+			res.redirect(303, `/${id}`);
 		}
 	}
 	catch(err){
