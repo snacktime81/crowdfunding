@@ -57,7 +57,7 @@ const putUser: RequestHandler = async(req, res) => {
 		const data = [name, email, hash, id];
 
 		await pool.query(query, data);
-		res.status(200).redirect(`/${id}`)
+		res.redirect(200, `/${id}`)
 	}
 	catch(err){
 		res.status(500)
@@ -67,16 +67,26 @@ const putUser: RequestHandler = async(req, res) => {
 
 const deleteUser: RequestHandler = async(req, res) => { 
 	try{
-		const password: string = req.body;
-		const id: number = req.params.id as unknown as number
-
-		const query = "DELETE FROM USER WHERE ID = (?)";
+		const body = req.body;
+		const password = body.password;
+	
+		const hash = await bcrypt.hash(password, 12)
+		const id = req.params.id
 		const data = [id]
+		let query = "SELECT * FROM USER WHERE ID = ?";
 
-		await pool.query(query, data);
-		res.cookie('accessToken', '');
-		res.cookie('refreshToken', '');
-		res.status(303).redirect(`/${id}`)
+		const [rows, fields] : [user[], FieldPacket[]] = await(pool.query(query, data));
+		const origianlPw = rows[0].password
+		console.log(hash, origianlPw)
+		if(hash === origianlPw){
+			query = "DELETE FROM USER WHERE ID = (?)";	
+			await pool.query(query, data);
+			res.cookie('accessToken', '');
+			res.cookie('refreshToken', '');
+			res.redirect(303, '/');
+		} else{
+			res.redirect(302, `/${id}`);
+		}
 	}
 	catch(err){
 		res.status(500)
@@ -105,38 +115,49 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 				  </script>`
 				);
 		}
+		
+		if(bcrypt.compareSync(password, exUser.password)){
+			
+			const accessSecret: string = process.env.ACCESS_SECRET || " ";
 
-		const accessSecret: string = process.env.ACCESS_SECRET || " ";
-		
-		const accessToken: string = jwt.sign({
-			id: exUser.id,
-			email: exUser.email,
-			name : exUser.name,
-		}, accessSecret, {
-			expiresIn: '1m',
-		});
-		
-		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
-		
-		const refreshToken: string = jwt.sign({
-			id: exUser.id,
-			email: exUser.email,
-			name: exUser.name,
-		}, refreshSecret, {
-			expiresIn: '300m',
-		});
-		
-		res.cookie('accessToken', accessToken, {
-			secure: false,
-			httpOnly: true,
-		})
-		res.cookie('refreshToken', refreshToken, {
-			secure: false,
-			httpOnly: true,
-		})
+			const accessToken: string = jwt.sign({
+				id: exUser.id,
+				email: exUser.email,
+				name : exUser.name,
+			}, accessSecret, {
+				expiresIn: '1m',
+			});
 
-		res.status(200);
-		res.redirect('/');
+			const refreshSecret: string = process.env.REFRESH_SECRET || " ";
+
+			const refreshToken: string = jwt.sign({
+				id: exUser.id,
+				email: exUser.email,
+				name: exUser.name,
+			}, refreshSecret, {
+				expiresIn: '300m',
+			});
+
+			res.cookie('accessToken', accessToken, {
+				secure: false,
+				httpOnly: true,
+			})
+			res.cookie('refreshToken', refreshToken, {
+				secure: false,
+				httpOnly: true,
+			})
+
+			res.status(200);
+			res.redirect('/');
+		} else{
+			res.status(409);
+			return res.send(
+				  `<script>
+					alert('비밀번호가 잘못되었습니다.');
+					location.href='/login';  
+				  </script>`
+				);
+		}
 	}
 	catch(err){
 		res.status(500);
