@@ -35,6 +35,38 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 		data = [email, name, hash];
 		
 		await pool.query(query, data);
+
+		query = "SELECT id FROM USER WHERE email=?"
+		const [row, field] : [user[], FieldPacket[]] = await pool.query(query, [email]);
+		const newUser = row[0];
+		const accessSecret: string = process.env.ACCESS_SECRET || " ";
+
+		const accessToken: string = jwt.sign({
+			id: newUser.id,
+			email: email,
+			name : name,
+		}, accessSecret, {
+			expiresIn: '1m',
+		});
+
+		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
+
+		const refreshToken: string = jwt.sign({
+			id: newUser.id,
+			email: email,
+			name: name,
+		}, refreshSecret, {
+			expiresIn: '300m',
+		});
+
+		res.cookie('accessToken', accessToken, {
+			secure: false,
+			httpOnly: true,
+		})
+		res.cookie('refreshToken', refreshToken, {
+			secure: false,
+			httpOnly: true,
+		})
 		
 		res.status(200);
 		return res.redirect('/');
