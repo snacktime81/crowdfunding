@@ -36,17 +36,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 function userDelete() {
     return __awaiter(this, void 0, void 0, function () {
-        var confirmPassword, userId, response, result;
+        var confirmPassword, userId, url, response, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    _a.trys.push([0, 2, , 3]);
                     confirmPassword = prompt("삭제를 위해서 비밀번호를 입력해 주세요");
                     userId = window.location.pathname;
-                    console.log("유저아이디", userId);
-                    return [4 /*yield*/, fetch("/".concat(userId), {
-                            method: 'DELETE',
+                    url = "/auth".concat(userId);
+                    return [4 /*yield*/, fetch(url, {
+                            method: 'delete',
                             headers: {
-                                'Content-Type': 'application/json;charset=utf-8'
+                                'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
                                 password: confirmPassword
@@ -54,11 +55,19 @@ function userDelete() {
                         })];
                 case 1:
                     response = _a.sent();
-                    return [4 /*yield*/, response.json()];
+                    console.log('re', response);
+                    if (response.ok) {
+                        window.location.href = '/';
+                    }
+                    else {
+                        window.location.href = userId;
+                    }
+                    return [3 /*break*/, 3];
                 case 2:
-                    result = _a.sent();
-                    alert(result.message);
-                    return [2 /*return*/];
+                    err_1 = _a.sent();
+                    console.log('err', err_1);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
         });
     });
