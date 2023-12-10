@@ -67,26 +67,25 @@ const putUser: RequestHandler = async(req, res) => {
 
 const deleteUser: RequestHandler = async(req, res) => { 
 	try{
-		const body = req.body;
-		const password = body.password;
+		const {password}: Pick<reqBody, 'password'> = req.body;
 	
-		const hash = await bcrypt.hash(password, 12)
-		const id = req.params.id
-		const data = [id]
-		let query = "SELECT * FROM USER WHERE ID = ?";
+		const id = req.params.id;
 
-		const [rows, fields] : [user[], FieldPacket[]] = await(pool.query(query, data));
-		const origianlPw = rows[0].password
-		if(bcrypt.compareSync(hash, origianlPw)){
-			query = "DELETE FROM USER WHERE ID = (?)";	
+		const data = [id];
+		let query = "SELECT * FROM USER WHERE ID = (?);";
+
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, data);
+		const origianlPw = rows[0].password;
+		if(bcrypt.compareSync(password, origianlPw)){
+			res.cookie('accessToken', '')
+			res.cookie('refreshToken', '')
+			query = "DELETE FROM USER WHERE ID = (?);";	
 			await pool.query(query, data);
-			res.cookie('accessToken', '');
-			res.cookie('refreshToken', '');
 			console.log('yes')
-			res.redirect(303, '/');
+			res.redirect(201, '/');
 		} else{
-			console.log('no')
-			res.redirect(303, `/${id}`);
+			console.log('no');
+			res.redirect(409, `/${id}`);
 		}
 	}
 	catch(err){
@@ -116,7 +115,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response, next: NextF
 				  </script>`
 				);
 		}
-		
+
 		if(bcrypt.compareSync(password, exUser.password)){
 			
 			const accessSecret: string = process.env.ACCESS_SECRET || " ";
