@@ -259,8 +259,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 
 		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
 			if(isExpired(refreshData)){ // refreshToken 또한 만료 되었을 떄
-				res.status(401);
-				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+				res.status(401).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // refreshToken으로 accessToken 재발급
 				const accessToken: string = jwt.sign({
@@ -268,14 +267,12 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 					email: refreshData.email,
 					name: refreshData.name,
 				}, accessSecret, {
-					expiresIn: '5m',
+					expiresIn: '1m',
 				});
-				
 				res.cookie('accessToken', accessToken, {
 					secure: false,
 					httpOnly: true,
 				});
-				res.status(200);
 				next()
 			}
 		}
@@ -291,6 +288,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 	}
 	catch(err){
 		res.status(500);
+		console.log('tokenCheck error');
 		const error = new Error(err as string);
 		next(error);
 	}
