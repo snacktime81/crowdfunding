@@ -273,16 +273,15 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 					secure: false,
 					httpOnly: true,
 				});
-				next()
+				next();
 			}
 		}
 		else{ // accessToken이 남아있을떄
 			if(isExpired(refreshData)){ // refreshToken이 만료되었을 때
-				res.status(401);
-				res.status(500).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
+				res.status(401).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // 로그인이 되어있는 상태
-				next()
+				next();
 			}
 		}
 	}
