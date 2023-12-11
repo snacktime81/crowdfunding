@@ -4,17 +4,14 @@ import{
 } from '../controllers/item';
 
 import{
-	loginAuth, refreshToken, isLoggedIn, isNotLoggedIn
+	tokenCheck
 } from '../controllers/auth';
 
 const router = express.Router();
 
-router.get('/', isNotLoggedIn, refreshToken, loginAuth);
-router.get('/', isLoggedIn, renderItem);
+router.get('/', tokenCheck, renderItem);
 
-
-router.post('/', isLoggedIn, postItem);
-router.post('/', refreshToken, loginAuth, postItem);
+router.post('/', tokenCheck, postItem);
 
 router.get('/list', renderItemList);
 
