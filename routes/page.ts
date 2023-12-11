@@ -1,17 +1,15 @@
 import express from 'express';
 import{
-	renderMainNotLoggedIn, renderLogin, renderJoin, renderMainLoggedIn, logout, renderProfile, renderUser
+	renderLogin, renderJoin, logout, renderProfile, renderUser, renderHome
 } from '../controllers/page';
 
 import{
-	loginAuth, isLoggedIn, isNotLoggedIn, refreshToken, tokenCheck
+	tokenCheck
 } from '../controllers/auth';
 
 const router = express.Router();
 
-router.get('/', isNotLoggedIn, refreshToken, renderMainNotLoggedIn);
-router.get('/', isLoggedIn, renderMainLoggedIn);
-
+router.get('/', renderHome);
 
 router.get('/login', renderLogin);
 router.get('/join', renderJoin);
