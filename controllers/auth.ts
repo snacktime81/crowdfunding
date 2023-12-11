@@ -7,6 +7,7 @@ import pool from "../models/db";
 
 import {user, payload, reqBody} from "../types/model";
 import { CustomError } from '../types';
+import {verify, isExpired} from '../func/token';
 
 dotenv.config();
 
@@ -226,21 +227,6 @@ const refreshToken: RequestHandler = async(req: Request, res: Response, next: Ne
 		next();
 	}
 }
-
-const verify = (token: string, secret: string) => {
-    try{    
-		const data: payload = jwt.verify(token, secret) as payload;
-		return data;
-    }
-	catch(err){
-			return 'expired';
-    }
-}
-
-const isExpired = (data: payload | 'expired'): data is 'expired' => {
-	return data === 'expired';
-}
-
 const tokenCheck: RequestHandler = (req, res, next) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
