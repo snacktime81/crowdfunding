@@ -1,10 +1,13 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
-import pool from "../models/db";
-import { item } from '../types/model';
 import {FieldPacket} from 'mysql2/promise';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
+import pool from "../models/db";
+import { item } from '../types/model';
 import {user, payload} from "../types/model";
+
+dotenv.config();
 
 
 const renderMainNotLoggedIn: RequestHandler = async(req: Request, res: Response) => {
@@ -40,23 +43,25 @@ const logout: RequestHandler = (req, res) => {
 	}
 }
 
-const getUserToToken: (arg: string) => Promise<user> = async(accessToken) => {
-	const data: payload = jwt.verify(accessToken, process.env.ACCESS_SECRET || '') as payload;
-
-	let query = "SELECT * FROM USER WHERE id = (?)";
-	let dataId = [data.id]
-
-	const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
-	const exUser: user = rows[0];
-	
-	return exUser
+const getUserToToken: (arg: string) => Promise<user | undefined> = async(accessToken) => {
+	try{
+		const accessSecret = process.env.ACCESS_SECRET || ""
+		const data: payload = jwt.verify(accessToken, accessSecret) as payload;
+		let query = "SELECT * FROM USER WHERE id = (?)";
+		let dataId = [data.id]
+		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
+		const exUser: user = rows[0];
+		return exUser
+	}
+	catch(err){
+		console.log(err);
+	}
 }
 
 const renderProfile: RequestHandler = async(req, res) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const user = await getUserToToken(accessToken);
-		
 		res.status(302).render('profile', {user: user});
 	}
 	catch(err){
