@@ -81,16 +81,16 @@ const postUser: RequestHandler = async(req: Request, res: Response, next: NextFu
 
 const putUser: RequestHandler = async(req, res) => {
 	try{
-		const {name, email, password}: reqBody = req.body;
+		const {name, password}: reqBody = req.body;
 		const hash = await bcrypt.hash(password, 12);
 
 		const id = req.params.id
 
-		const query = "UPDATE USER SET name = (?), email = (?), password = (?) WHERE ID = (?)";
-		const data = [name, email, hash, id];
+		const query = "UPDATE USER SET name = (?), password = (?) WHERE ID = (?)";
+		const data = [name, hash, id];
 
 		await pool.query(query, data);
-		res.redirect(303, `/${id}`)
+		res.redirect(200, `${id}`);
 	}
 	catch(err){
 		res.status(500)
