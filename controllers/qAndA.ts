@@ -2,7 +2,7 @@ import express from 'express';
 import pool from "../models/db";
 import { FieldPacket } from "mysql2/promise";
 import jwt from 'jsonwebtoken';
-import {user, qAndA} from "../types/model";
+import {qAndA} from "../types/model";
 
 import dotenv from 'dotenv';
 dotenv.config();

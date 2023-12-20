@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 
 import pool from "../models/db";
 import { item } from '../types/model';
-import {user, payload} from "../types/model";
-import {verify, isExpired} from '../func/token';
+import {payload} from "../types/model";
+import {verify, isExpired, getUserToToken} from '../func/token';
 
 dotenv.config();
 
@@ -96,21 +96,6 @@ const logout: RequestHandler = (req, res) => {
 	}
 	catch(err){
 		res.status(500);
-	}
-}
-
-const getUserToToken: (arg: string) => Promise<user | undefined> = async(accessToken) => {
-	try{
-		const accessSecret = process.env.ACCESS_SECRET || ""
-		const data: payload = jwt.verify(accessToken, accessSecret) as payload;
-		let query = "SELECT * FROM USER WHERE id = (?)";
-		let dataId = [data.id]
-		const [rows, fields] : [user[], FieldPacket[]] = await pool.query(query, dataId);
-		const exUser: user = rows[0];
-		return exUser
-	}
-	catch(err){
-		console.log(err);
 	}
 }
 
