@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var _this = this;
 function userDelete() {
     return __awaiter(this, void 0, void 0, function () {
         var confirmPassword, userId, url, response, err_1;
@@ -55,7 +56,6 @@ function userDelete() {
                         })];
                 case 1:
                     response = _a.sent();
-                    console.log('re', response);
                     if (response.ok) {
                         window.location.href = '/';
                     }
@@ -68,6 +68,64 @@ function userDelete() {
                     console.log('err', err_1);
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+function nullCheck(data) {
+    if (typeof (data) == null) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+var form = document.getElementById('userData');
+form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        e.preventDefault();
+        userPut();
+        return [2 /*return*/];
+    });
+}); });
+function userPut() {
+    return __awaiter(this, void 0, void 0, function () {
+        var confirmData, userId, url, formData, object_1, data, response, err_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    confirmData = confirm("유저 정보 변경에 동의 하십니까?");
+                    userId = window.location.pathname;
+                    url = "auth/".concat(userId);
+                    console.log(form);
+                    if (!confirmData) return [3 /*break*/, 2];
+                    if (!!nullCheck(form)) return [3 /*break*/, 2];
+                    formData = new FormData(form);
+                    object_1 = {};
+                    formData.forEach(function (value, key) {
+                        object_1[key] = value;
+                    });
+                    data = JSON.stringify(object_1);
+                    console.log('data', data);
+                    return [4 /*yield*/, fetch(url, {
+                            method: "PUT",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: data
+                        })];
+                case 1:
+                    response = _a.sent();
+                    _a.label = 2;
+                case 2:
+                    window.location.href = userId;
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    console.log(err_2);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
