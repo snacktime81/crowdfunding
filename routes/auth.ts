@@ -1,4 +1,5 @@
 import express from 'express';
+
 import{
 	postUser, postLogin, putUser, deleteUser
 } from '../controllers/auth';

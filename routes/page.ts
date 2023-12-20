@@ -1,11 +1,9 @@
 import express from 'express';
+
 import{
 	renderLogin, renderJoin, logout, renderProfile, renderUser, renderHome
 } from '../controllers/page';
-
-import{
-	tokenCheck
-} from '../controllers/auth';
+import{tokenCheck} from '../middlewares/auth';
 
 const router = express.Router();
 

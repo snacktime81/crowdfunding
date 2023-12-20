@@ -1,11 +1,9 @@
 import express from 'express';
+
 import{
 	renderItemList, renderItem, postItem, renderItemId, postOrder
 } from '../controllers/item';
-
-import{
-	tokenCheck
-} from '../controllers/auth';
+import{tokenCheck} from '../middlewares/auth';
 
 const router = express.Router();
 

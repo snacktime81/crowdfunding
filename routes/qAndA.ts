@@ -1,11 +1,9 @@
 import express from 'express';
+
 import{
 	renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList
 } from '../controllers/qAndA';
-
-import{
-	loginAuth, refreshToken, isLoggedIn, isNotLoggedIn, tokenCheck
-} from '../controllers/auth';
+import{tokenCheck} from '../middlewares/auth';
 
 const router = express.Router();
 
