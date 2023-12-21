@@ -31,7 +31,7 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 					email: refreshData.email,
 					name: refreshData.name,
 				}, accessSecret, {
-					expiresIn: '1m',
+					expiresIn: '5m',
 				});
 				res.cookie('accessToken', accessToken, {
 					secure: false,
@@ -73,6 +73,10 @@ const idCheck: RequestHandler = (req, res, next) => {
 				const error = new NoMatchId('권한이 없습니다.');
 				throw(error);
 			}
+		}
+		else{
+			const error = new Error('에러이유 모르겠음');
+			throw(error);
 		}
 		
 	}

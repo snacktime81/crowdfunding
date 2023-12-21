@@ -106,7 +106,7 @@ const renderProfile: RequestHandler = async(req, res) => {
 		res.status(302).render('profile', {user: user});
 	}
 	catch(err){
-		res.status(500);
+		throw(err);
 	}
 }
 
