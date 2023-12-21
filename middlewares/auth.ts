@@ -2,6 +2,7 @@ import {RequestHandler, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 
 import {verify, isExpired} from '../func/token';
+import { NoMatchId } from '../types/error';
 import {payload} from "../types/model";
 
 const tokenCheck: RequestHandler = (req, res, next) => {
@@ -56,4 +57,27 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 	}
 }
 
-export {tokenCheck}
+const idCheck: RequestHandler = (req, res, next) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const accessSecret = process.env.ACCESS_SECRET || '';
+
+		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
+		const userId: number = req.params.id as unknown as number;
+
+		if(!isExpired(accessData)){ // 유효한 경우
+			if(accessData.id == userId){
+				next();
+			}
+			else{
+				const error = new NoMatchId('권한이 없습니다.');
+				throw(error);
+			}
+		}
+		
+	}
+	catch(err){
+		next(err);
+	}
+}
+export {tokenCheck, idCheck}
