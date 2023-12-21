@@ -5,14 +5,15 @@ import path from 'path';
 import dotenv from 'dotenv';
 import nunjucks from 'nunjucks';
 import methodOverride from 'method-override';
+import cors from 'cors';
 
 dotenv.config();
 import pageRouter from '../routes/page';
 import authRouter from '../routes/auth';
 import itemRouter from '../routes/item';
 import qAndARouter from '../routes/qAndA';
-import {loginAuth} from '../controllers/auth';
 import { CustomError } from '../types';
+import { NoMatchId } from '../types/error';
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
@@ -32,9 +33,8 @@ app.use(express.static(path.join(rootDir, "/public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(methodOverride('_method'))
-
-
+app.use(methodOverride('_method'));
+app.use(cors());
 
 app.use('/auth', authRouter);
 app.use('/item', itemRouter);
@@ -47,13 +47,18 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
   next(error);
 });
 
-
-const errorHandler: ErrorRequestHandler = (err: CustomError, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err);
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
-  res.status(err.status || 500);
-  res.render('error');
+const errorHandler: ErrorRequestHandler = (err, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if(err instanceof NoMatchId){
+    console.log('error', err)
+    res.send(`<script> alert("${err.message}"); location.href='/'; </script>`)
+  }
+  else{
+    console.error(err);
+    res.locals.message = err.message;
+    res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+    res.status(err.status || 500);
+    res.render('error');
+  }
 };
 app.use(errorHandler);
 
