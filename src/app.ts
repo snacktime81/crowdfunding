@@ -12,7 +12,7 @@ import pageRouter from '../routes/page';
 import authRouter from '../routes/auth';
 import itemRouter from '../routes/item';
 import qAndARouter from '../routes/qAndA';
-import { CustomError } from '../types';
+import { CustomError, TokenExpiredError } from '../types';
 import { NoMatchId } from '../types/error';
 
 const app = express();
@@ -49,8 +49,9 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 
 const errorHandler: ErrorRequestHandler = (err, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if(err instanceof NoMatchId){
-    console.log('error', err)
     res.send(`<script> alert("${err.message}"); location.href='/'; </script>`)
+  } else if(err instanceof TokenExpiredError){
+    console.log('jwt refresh');
   }
   else{
     console.error(err);

@@ -31,12 +31,7 @@ const getUserToToken: (arg: string) => Promise<user | undefined> = async(accessT
 		return exUser
 	}
 	catch(err){
-		if(err instanceof TokenExpiredError){
-			console.log('token refresh');
-		}
-		else{
-			console.log(err);
-		}
+		throw(err);
 	}
 }
 
