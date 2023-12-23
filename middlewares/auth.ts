@@ -75,7 +75,7 @@ const idCheck: RequestHandler = (req, res, next) => {
 			}
 		}
 		else{
-			const error = new Error('에러이유 모르겠음');
+			const error = new Error('로그인을 다시 해주세요');
 			throw(error);
 		}
 		
