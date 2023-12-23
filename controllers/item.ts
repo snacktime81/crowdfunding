@@ -1,9 +1,12 @@
 import {RequestHandler, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import {FieldPacket} from 'mysql2/promise';
-import { user, item } from '../types/model';
 
+import { user, item } from '../types/model';
 import pool from "../models/db";
+import {getUserToToken} from '../func/token'
+import { Error } from 'sequelize';
+import { CustomError } from '../types/error';
 
 const renderItem: RequestHandler = (req : Request, res: Response) => {
 	res.render('item');
@@ -60,6 +63,27 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 	await pool.query(query, dataId);
 	
 	res.status(200).render('itemDetail', {item});
+}
+
+const renderMyItemList: RequestHandler = async(req, res) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const user = await getUserToToken(accessToken);
+		
+		let query = 'SELECT * FROM ITEM INNER JOIN USER ON ITEM.user_id = USER.id WHERE id = (?)';
+		if(!user || typeof user.id === 'undefined'){
+			const error = new CustomError('User or User.id not found');
+			throw(error);
+		} else{
+			const userId = user.id;
+			const[items, fields]:[item[], FieldPacket[]] = await pool.query(query, userId);
+			res.status(200).render('myItemList', {items});
+		} 
+
+	} 
+	catch(err){
+
+	}
 }
 
 const postOrder: RequestHandler = async(req, res) => {
