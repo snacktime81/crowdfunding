@@ -70,19 +70,29 @@ const renderMyItemList: RequestHandler = async(req, res) => {
 		const accessToken: string = req.cookies.accessToken;
 		const user = await getUserToToken(accessToken);
 		
-		let query = 'SELECT * FROM ITEM INNER JOIN USER ON ITEM.user_id = USER.id WHERE id = (?)';
+		let query = 'SELECT ITEM.id as item_id, USER.id as user_id, USER.name as user_name, ITEM.name as item_name FROM ITEM INNER JOIN USER ON ITEM.user_id = USER.id WHERE USER.id = (?)';
 		if(!user || typeof user.id === 'undefined'){
 			const error = new CustomError('User or User.id not found');
 			throw(error);
 		} else{
 			const userId = user.id;
 			const[items, fields]:[item[], FieldPacket[]] = await pool.query(query, userId);
-			res.status(200).render('myItemList', {items});
+			res.status(200).render('userItemList', {items});
 		} 
 
 	} 
 	catch(err){
-
+		if(err instanceof CustomError){
+			if(err.message === "user or User.id not found"){
+				res.status(409).send('<script> alert("다시 로그인해 주세요"); location.href="/"; </script>')
+			} else{
+				res.status(500);
+			}
+		}
+		else{
+			res.status(500)
+			console.log(err);
+		}
 	}
 }
 
