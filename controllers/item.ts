@@ -114,4 +114,4 @@ const postOrder: RequestHandler = async(req, res) => {
 	}
 }
 
-export {renderItem, postItem, renderItemList, renderItemId, postOrder};
+export {renderItem, postItem, renderItemList, renderItemId, postOrder, renderMyItemList};
