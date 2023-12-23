@@ -3,7 +3,7 @@ import express from 'express';
 import{
 	renderItemList, renderItem, postItem, renderItemId, postOrder, renderMyItemList
 } from '../controllers/item';
-import{tokenCheck} from '../middlewares/auth';
+import{idCheck, tokenCheck} from '../middlewares/auth';
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.get('/', tokenCheck, renderItem);
 
 router.post('/', tokenCheck, postItem);
 
-router.get('/list/:id', renderMyItemList);
+router.get('/list/:id', tokenCheck, idCheck, renderMyItemList);
 router.get('/list', renderItemList);
 
 router.post('/order', postOrder);
