@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyItemList</title>
+  <link rel="stylesheet" href="../itemList.css">
+</head>
+<body>
+	<div>
+		<h1>
+			{{items[0].user_name}}
+		</h1>
+	</div>
+	<div>
+		<form method='GET'>
+			<ol class="large-numbers">
+				{% for item in items %}
+					<li><a href='../{{item.item_id}}'> {{item.item_name}} </a></li>
+				{% endfor %}
+			</ol>
+			<br>
+			<br>
+			<ul>
+				<li><a href='/'>
+				HOME
+					</a></li>
+			</ul>
+		</form>
+	</div>
+</body>
