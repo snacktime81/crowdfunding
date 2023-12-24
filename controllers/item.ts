@@ -49,20 +49,36 @@ const renderItemList: RequestHandler = async(req : Request, res: Response) => {
 }
 
 const renderItemId: RequestHandler = async(req: Request, res: Response) => {
-	
-	const {id} = req.params;
-	
-	let query = 'SELECT * FROM ITEM WHERE id = (?)';
-	const dataId = [id];
+	try{
+		const {id} = req.params;
+		
+		let query = 'SELECT * FROM ITEM WHERE id = (?)';
+		const dataId = [id];
 
-	const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
-	const item = items[0];
+		const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
+		const item = items[0];
 
-	query = "UPDATE ITEM SET views = views + 1 WHERE ID = (?)";
-	
-	await pool.query(query, dataId);
-	
-	res.status(200).render('itemDetail', {item});
+		query = "UPDATE ITEM SET views = views + 1 WHERE ID = (?)";
+		
+		await pool.query(query, dataId);
+		const accessToken = req.cookies.accessToken;
+		const user = await getUserToToken(accessToken);
+		let userMatch;
+		if(!user){
+			userMatch = false;
+		} else{
+			const userId = user.id;
+			if(userId === item.user_id){
+				userMatch = true;
+			} else{
+				userMatch = false;
+			}
+		}
+		res.status(200).render('itemDetail', {item, userMatch: userMatch});
+	}
+	catch(err){
+		console.log(err);
+	}
 }
 
 const renderMyItemList: RequestHandler = async(req, res) => {
