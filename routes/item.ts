@@ -11,8 +11,8 @@ router.get('/', tokenCheck, renderItem);
 
 router.post('/', tokenCheck, postItem);
 
-router.get('/list/:id', tokenCheck, idCheck, renderMyItemList);
 router.get('/list', renderItemList);
+router.get('/list/:id', tokenCheck, idCheck, renderMyItemList);
 
 router.post('/order', postOrder);
 
