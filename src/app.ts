@@ -12,8 +12,9 @@ import pageRouter from '../routes/page';
 import authRouter from '../routes/auth';
 import itemRouter from '../routes/item';
 import qAndARouter from '../routes/qAndA';
-import { CustomError, TokenExpiredError } from '../types';
+import { CustomError } from '../types';
 import { NoMatchId } from '../types/error';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 const app = express();
 app.set('port', process.env.PORT || 8000);
