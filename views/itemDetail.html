@@ -49,7 +49,9 @@
 					<input href="#" type="submit" class="cart-btn" onclick='requestPay()' value ="buy">
 				</form>
 				{% if userMatch %}
-					<input href='/' type="submit" class="edit-btn" value="edit">
+				<form action="edit/{{item.id}}" style="margin-left:1%">  <!--control uri-->
+					<input type="submit" class="edit-btn" value="edit">
+				</form>
 				{% endif %}
 			</div>
 		
