@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>item</title>
-  <link rel="stylesheet" href="item.css">
+  <link rel="stylesheet" href="/item/item.css">
 </head>
 <body>
   	<div class="container" id="container">
@@ -12,20 +12,33 @@
 			<div class="form-container sign-in-container fset">
 
 				<h1>Create Idea</h1>
-
+				
+				{% if edit %}
+				<input type="name" name='name' placeholder="idea name" value="{{item.name}}" required/>
+				<input type="price" name="price" placeholder="목표 가격"value="{{item.price}}" required/>
+				<input type="percent" placeholder="펀딩할 지분(%)" name='percent' value="{{item.percent}}" required />
+				<input type="datetime-local" name="deadline" placeholder="마감일" value="{{item.deadline}}" required/>
+				<input enctype="multiipart/formdata" id="image" name="image" value="{{item.img}}" accept="image/*" >
+				<button>수정하기</button>
+				{% else %}
 				<input type="name" name='name' placeholder="idea name" required/>
 				<input type="price" name="price" placeholder="목표 가격" required/>
 				<input type="percent" placeholder="펀딩할 지분(%)" name='percent' required />
 				<input type="datetime-local" name="deadline" placeholder="마감일" required/>
-				<input type="file" id="image" name="image" accept="image/*" >
+				<input enctype="multiipart/formdata" id="image" name="image" accept="image/*" >
 				<button>만들기</button>
+				{% endif %}
 
 			</div>
 			<div class="overlay-container">
 				<div class="overlay">
 					<div class="overlay-panel overlay-right">
-						 <textarea class="form-control" placeholder="Comments"  id="floatingTextarea2" name='describe'></textarea>
-						 <label for="floatingTextarea2">Comments</label>
+						{% if edit %}
+						<textarea class="form-control" placeholder="Comments" id="floatingTextarea2" name='describe'>{{item.explanation}}</textarea>
+						{% else %}
+						<textarea class="form-control" placeholder="Comments"  id="floatingTextarea2" name='describe'></textarea>
+						{% endif %}
+						<label for="floatingTextarea2">Comments</label>
 					</div>
 				</div>
 			</div>
