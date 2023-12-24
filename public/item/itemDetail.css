@@ -153,6 +153,22 @@ html, body {
   background-color: #64af3d;
 }
 
+.edit-btn {
+  display: inline-block;
+  background-color: #2a1ab9;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #FFFFFF;
+  text-decoration: none;
+  padding: 12px 30px;
+  transition: all .5s;
+  margin-left: 1%;
+}
+
+.edit-btn:hover {
+  background-color: #4534dd;
+}
+
 /* Responsive */
 @media (max-width: 940px) {
   .container {
