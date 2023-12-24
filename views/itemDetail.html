@@ -29,7 +29,8 @@
 		</div>
 
 			<!-- Product Configuration -->
-		<form action="#" id="form">
+		
+		
 			<div class="product-configuration">
 
 				<!-- Cable Configuration -->
@@ -44,10 +45,15 @@
 			<!-- Product Pricing -->
 			<p id='price' style="display:none;">{{item.price}}</p>
 			<div class="product-price">
-				<input href="#" type="submit" class="cart-btn" onclick='requestPay()' value ="buy">
-				<input type="submit" class="edit-btn" value="edit">
+				<form action="#" id="form">
+					<input href="#" type="submit" class="cart-btn" onclick='requestPay()' value ="buy">
+				</form>
+				{% if userMatch %}
+					<input href='/' type="submit" class="edit-btn" value="edit">
+				{% endif %}
 			</div>
-		</form>
+		
+		
 		<script>
 			
 		</script>
