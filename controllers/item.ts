@@ -112,6 +112,24 @@ const renderMyItemList: RequestHandler = async(req, res) => {
 	}
 }
 
+const renderMyItemId: RequestHandler = async(req, res) => {
+	try{
+		const {id} = req.params;
+		
+		let query = 'SELECT * FROM ITEM WHERE ITEM.id = (?)';
+		//
+		const dataId = [id];
+
+		const [items, fields]:[item[], FieldPacket[]] = await pool.query(query, dataId);
+		const item = items[0];
+
+		res.status(200).render('item', {item, edit:true})
+	}
+	catch(err){
+		console.log(err);
+	}	
+}
+
 const postOrder: RequestHandler = async(req, res) => {
 	try{
 		const purchasePercent = req.body.purchasePercent as number;
@@ -140,4 +158,4 @@ const postOrder: RequestHandler = async(req, res) => {
 	}
 }
 
-export {renderItem, postItem, renderItemList, renderItemId, postOrder, renderMyItemList};
+export {renderItem, postItem, renderItemList, renderItemId, postOrder, renderMyItemList, renderMyItemId};
