@@ -8,25 +8,23 @@
 </head>
 <body>
   	<div class="container" id="container">
-		<form action="/item" method="POST">
+		<form id="item_content">
 			<div class="form-container sign-in-container fset">
-
 				<h1>Create Idea</h1>
-				
 				{% if edit %}
 				<input type="name" name='name' placeholder="idea name" value="{{item.name}}" required/>
 				<input type="price" name="price" placeholder="목표 가격"value="{{item.price}}" required/>
 				<input type="percent" placeholder="펀딩할 지분(%)" name='percent' value="{{item.percent}}" required />
 				<input type="datetime-local" name="deadline" placeholder="마감일" value="{{item.deadline}}" required/>
 				<input enctype="multiipart/formdata" id="image" name="image" value="{{item.img}}" accept="image/*" >
-				<button>수정하기</button>
+				<button type="submit">수정하기</button>
 				{% else %}
 				<input type="name" name='name' placeholder="idea name" required/>
 				<input type="price" name="price" placeholder="목표 가격" required/>
 				<input type="percent" placeholder="펀딩할 지분(%)" name='percent' required />
 				<input type="datetime-local" name="deadline" placeholder="마감일" required/>
 				<input enctype="multiipart/formdata" id="image" name="image" accept="image/*" >
-				<button>만들기</button>
+				<button type="submit">만들기</button>
 				{% endif %}
 
 			</div>
@@ -49,5 +47,6 @@
 			<input type='submit' value="HOME" id='homeButton'>
 		</form>
 	</div>
+	<script src="/item/item.js"></script>
 </body>
 </html>
