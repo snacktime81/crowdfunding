@@ -17,7 +17,10 @@
 				<input type="percent" placeholder="펀딩할 지분(%)" name='percent' value="{{item.percent}}" required />
 				<input type="datetime-local" name="deadline" placeholder="마감일" value="{{item.deadline}}" required/>
 				<input enctype="multiipart/formdata" id="image" name="image" value="{{item.img}}" accept="image/*" >
-				<button type="submit">수정하기</button>
+				<div class="buttonF">
+					<button class='buttonT'type="submit"> 수정 </button>
+					<button type="click" class='buttonT' id="delete"> 삭제 </button>
+				</div>
 				{% else %}
 				<input type="name" name='name' placeholder="idea name" required/>
 				<input type="price" name="price" placeholder="목표 가격" required/>
