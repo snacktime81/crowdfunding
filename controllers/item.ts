@@ -41,8 +41,7 @@ const postItem: RequestHandler = async(req: Request, res: Response) => {
 const putItem: RequestHandler = async(req, res) => {
 	try{
 		const {name, price, percent, deadline, image, describe} = req.body;
-		let query = "UPDATE ITEM set name=?, price=?, percent=?, explanation=?, img=?, deadline=? WHERE id=(?)";
-		
+		let query = "UPDATE ITEM SET name=?, price=?, percent=?, explanation=?, img=?, deadline=? WHERE id=(?)";
 		const itemId = req.params.id;
 		
 		const data = [name, price, percent, describe, image, deadline, itemId];
@@ -54,6 +53,19 @@ const putItem: RequestHandler = async(req, res) => {
 		if((err as Error).message === 'Data too long for column \'name\' at row 1'){
 			res.status(400).send(`<script>alert("이름이 너무 깁니다."); location.reload(ture);</script>`);
 		}
+	}
+}
+
+const deleteItem: RequestHandler = async(req, res) => {
+	try{
+		const query = "DELETE FROM ITEM WHERE id=(?);";
+		const itemId = req.params.id;
+		const data = [itemId];
+		await pool.query(query, data);
+		res.redirect(200, 'item/itemId')
+	}
+	catch(err){
+		console.log(err);
 	}
 }
 
@@ -177,4 +189,4 @@ const postOrder: RequestHandler = async(req, res) => {
 	}
 }
 
-export {renderItem, postItem, putItem, renderItemList, renderItemId, postOrder, renderMyItemList, renderMyItemId};
+export {renderItem, postItem, putItem, renderItemList, renderItemId, postOrder, renderMyItemList, renderMyItemId, deleteItem};
