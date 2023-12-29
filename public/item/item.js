@@ -2,7 +2,7 @@ const form = document.getElementById('item_content');
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
-  const buttonType = document.querySelector('button');
+  const buttonType = document.querySelector('button')
   if(buttonType.id == 'put'){
     itemPut();
   }
@@ -76,6 +76,9 @@ async function itemDelete() {
   const response = await fetch(url, {
     method: "DELETE",
   })
-  alert('삭제 되었습니다.');
-  window.location.href=`/`;
+  const result = await response;
+  if(result.ok){
+    alert('삭제 되었습니다.');
+    window.location.href=`/`;
+  }
 }
