@@ -71,14 +71,19 @@ async function itemPost() {
 }
 
 async function itemDelete() {
-  const itemId = window.location.pathname.substring(11);
-  const url = '/item/'.concat(itemId);
-  const response = await fetch(url, {
-    method: "DELETE",
-  })
-  const result = await response;
-  if(result.ok){
-    alert('삭제 되었습니다.');
-    window.location.href=`/`;
+  try{
+    const itemId = window.location.pathname.substring(11);
+    const url = '/item/'.concat(itemId);
+    const response = await fetch(url, {
+      method: "DELETE",
+    })
+    const result = await response;
+    if(result.ok){
+      alert('삭제 되었습니다.');
+      window.location.href=`/`;
+    }
+  }
+  catch(err){
+    console.log(err);
   }
 }
