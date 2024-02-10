@@ -94,7 +94,6 @@ const renderMyQAList: express.RequestHandler = async(req, res) => {
 		} else{
 			const userId = user.id;
 			const[qAndAs, fields]:[qAndA[], FieldPacket[]] = await pool.query(query, userId);
-			console.log(qAndAs)
 			res.status(200).render('userQAList', {qAndAs});
 		} 
 
