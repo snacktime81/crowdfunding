@@ -3,6 +3,9 @@ import pool from "../models/db";
 import { FieldPacket } from "mysql2/promise";
 import jwt from 'jsonwebtoken';
 import {qAndA} from "../types/model";
+import {getUserToToken} from '../func/token'
+import { CustomError } from '../types/error';
+
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -78,4 +81,37 @@ const renderFAQList: express.RequestHandler = async(req, res) => {
 	res.render('FAQList', {items: FAQ});
 }
 
-export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList }
+const renderMyQAList: express.RequestHandler = async(req, res) => {
+	try{
+		const accessToken: string = req.cookies.accessToken;
+		const user = await getUserToToken(accessToken);
+		
+		let query = "SELECT U.name as user_name, Q.id as QA_id, Q.question as question, Q.answer as answer FROM Q_AND_A AS Q INNER JOIN USER AS U ON(Q.user_id = U.id) WHERE user_id = (?);";
+
+		if(!user || typeof user.id === 'undefined'){
+			const error = new CustomError('User or User.id not found');
+			throw(error);
+		} else{
+			const userId = user.id;
+			const[qAndAs, fields]:[qAndA[], FieldPacket[]] = await pool.query(query, userId);
+			console.log(qAndAs)
+			res.status(200).render('userQAList', {qAndAs});
+		} 
+
+	} 
+	catch(err){
+		if(err instanceof CustomError){
+			if(err.message === "user or User.id not found"){
+				res.status(409).send('<script> alert("다시 로그인해 주세요"); location.href="/"; </script>')
+			} else{
+				res.status(500);
+			}
+		}
+		else{
+			res.status(500)
+			console.log(err);
+		}
+	}
+}
+
+export { renderQAndA, postQAndA, renderQAndAId, renderQAndAList, renderFAQList, renderMyQAList }
