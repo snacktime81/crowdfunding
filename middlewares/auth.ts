@@ -68,7 +68,6 @@ const idCheck: RequestHandler = (req, res, next) => {
 
 		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
 		const userId: number = req.params.id as unknown as number;
-
 		if(!isExpired(accessData)){ // 유효한 경우
 			if(accessData.id == userId){
 				next();

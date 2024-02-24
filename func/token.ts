@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import {FieldPacket} from 'mysql2/promise';
 import { TokenExpiredError } from 'jsonwebtoken';
 
@@ -33,6 +33,9 @@ const getUserToToken: (arg: string) => Promise<user | undefined> = async(accessT
 	catch(err){
 		if(err instanceof TokenExpiredError){
 			console.log('token refresh');
+		}
+		else if(err instanceof JsonWebTokenError){
+			console.log('need login')
 		}
 		else{
 			console.log(err);

@@ -194,6 +194,18 @@ input {
   transition: transform 0.6s ease-in-out;
 }
 
+.buttonF{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonT{
+  margin:2px;
+  text-align: center;
+
+}
+
 .overlay-left {
   transform: translateX(-20%);
 }

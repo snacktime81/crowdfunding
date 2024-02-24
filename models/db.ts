@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const state = process.env.NODE_ENV;
-const config = configObj[state];
+const config = configObj['development'];
 
 
 
