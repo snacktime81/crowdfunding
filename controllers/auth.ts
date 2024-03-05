@@ -54,7 +54,7 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 			email: email,
 			name: name,
 		}, refreshSecret, {
-			expiresIn: '300m',
+			expiresIn: '604800s',
 		});
 
 		res.cookie('accessToken', accessToken, {
