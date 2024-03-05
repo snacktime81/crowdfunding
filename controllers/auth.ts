@@ -63,8 +63,8 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 		})
 
 		const tokenName : string = `refreshToken${newUser.id}`;
-		let bool : 1|0 = await redisCli.set(tokenName, refreshToken);
-		bool = await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
+		await redisCli.set(tokenName, refreshToken);
+		await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
 		res.status(200);
 		return res.redirect('/');
@@ -172,11 +172,11 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 			res.cookie('accessToken', accessToken, {
 				secure: false,
 				httpOnly: true,
-			})
-			res.cookie('refreshToken', refreshToken, {
-				secure: false,
-				httpOnly: true,
-			})
+			});
+
+			const tokenName = `refreshToken${exUser.id}`;
+			redisCli.set(tokenName, refreshToken);
+			await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
 			res.status(200);
 			res.redirect('/');
