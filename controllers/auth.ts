@@ -107,10 +107,12 @@ const deleteUser: RequestHandler = async(req, res) => {
 		const origianlPw = rows[0].password;
 		if(bcrypt.compareSync(password, origianlPw)){
 			res.cookie('accessToken', '')
-			res.cookie('refreshToken', '')
-			query = "DELETE FROM USER WHERE ID = (?);";	
+			const tokenName = `refreshToken${id}`;
+			await redisCli.del(tokenName);
+
+			query = "DELETE FROM USER WHERE ID = (?);";
 			await pool.query(query, data);
-			console.log('yes')
+
 			res.redirect(201, '/');
 		} else{
 			console.log('no');
