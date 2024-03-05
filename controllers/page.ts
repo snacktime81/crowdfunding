@@ -6,7 +6,8 @@ import dotenv from 'dotenv';
 import pool from "../models/db";
 import { item } from '../types/model';
 import {payload} from "../types/model";
-import {verify, isExpired, getUserToToken} from '../func/token';
+import {verify, isExpired, getUserToToken, makeJwt} from '../func/token';
+import { redisCli } from '../src/app';
 
 dotenv.config();
 
@@ -30,45 +31,53 @@ const renderHome: RequestHandler = async(req, res) => {
 		const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
 		const [items, fields]: [item[], FieldPacket[]] = await pool.query(query);
 
-		const accessToken: string = req.cookies.accessToken;
-		const refreshToken: string = req.cookies.refreshToken;
+		let accessToken: string = req.cookies.accessToken;
 
 		const accessSecret = process.env.ACCESS_SECRET || '';
 		const refreshSecret = process.env.REFRESH_SECRET ||'';
+
 		let data : {loginState: boolean, items: item[]};
+
 		if(accessToken === undefined){ // undefined즉 accessToken이 존재하지 않을때
 			data = {loginState: false, items: items};
 		}
 
 		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
-		const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
 
 		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
-			if(isExpired(refreshData)){ // refreshToken 또한 만료 되었을 떄
-				data = {loginState: false, items: items};	
-			}
-			else{ // refreshToken으로 accessToken 재발급
-				const accessToken: string = jwt.sign({
-					id: refreshData.id,
-					email: refreshData.email,
-					name: refreshData.name,
-				}, accessSecret, {
-					expiresIn: '1m',
-				});
-				res.cookie('accessToken', accessToken, {
-					secure: false,
-					httpOnly: true,
-				});
-				data = {loginState: true, items: items};
+			let refreshToken: string = req.cookies.refreshToken;
+			const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
+			if (isExpired(refreshData)) {
+				data = {loginState: false, items: items};
+			} else{
+				const tokenName: string = `refreshToken${refreshData.id}`;
+				const redisRefreshToken: string = await redisCli.get(tokenName)
+				if (redisRefreshToken === refreshToken){  // RTR
+					data = {loginState: true, items: items};
+					await redisCli.set(tokenName, redisRefreshToken);
+					accessToken = makeJwt(`${refreshData.id}`, accessSecret, 18000);
+					res.cookie('accessToken', accessToken, {
+						secure: false,
+						httpOnly: true,
+					});
+					refreshToken = makeJwt(`${refreshData.id}`, refreshSecret, 604800);
+					res.cookie('refreshToken', refreshToken, {
+						secure: true,
+						httpOnly: true,
+					});
+					console.log('token refresh');
+				} else{
+					data = {loginState: false, items: items};
+					res.cookie('accessToken', '')
+					res.cookie('refreshToken', '')
+					const tokenName: string = `refreshToken${refreshData.id}`;
+					await redisCli.del(tokenName);
+					res.status(409).send('<script> alert("다시 로그인해 주세요"); location.href="/login"; </script>');
+				}
 			}
 		}
 		else{ // accessToken이 남아있을떄
-			if(isExpired(refreshData)){ // refreshToken이 만료되었을 때
-				data = {loginState: false, items: items};				
-			}
-			else{ // 로그인이 되어있는 상태
-				data = {loginState: true, items: items};
-			}
+			data = {loginState: true, items: items};
 		}
 		res.status(200).render('index', data);
 	}
@@ -91,7 +100,7 @@ const renderJoin: RequestHandler = (req : Request, res: Response) => {
 const logout: RequestHandler = (req, res) => {
 	try{
 		res.cookie('accessToken', '');
-		res.cookie('refreshToken', '');
+
 		res.status(200).redirect('/');
 	}
 	catch(err){
