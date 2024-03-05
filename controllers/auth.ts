@@ -62,6 +62,11 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 			httpOnly: true,
 		})
 
+		res.cookie('refreshToken', refreshToken, {
+			secure: true,
+			httpOnly: true,
+		})
+
 		const tokenName : string = `refreshToken${newUser.id}`;
 		await redisCli.set(tokenName, refreshToken);
 		await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
@@ -107,6 +112,7 @@ const deleteUser: RequestHandler = async(req, res) => {
 		const origianlPw = rows[0].password;
 		if(bcrypt.compareSync(password, origianlPw)){
 			res.cookie('accessToken', '')
+			res.cookie('refreshToken', '')
 			const tokenName = `refreshToken${id}`;
 			await redisCli.del(tokenName);
 
@@ -170,6 +176,10 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 			});
 
 			res.cookie('accessToken', accessToken, {
+				secure: false,
+				httpOnly: true,
+			});
+			res.cookie('refreshToken', refreshToken, {
 				secure: false,
 				httpOnly: true,
 			});
