@@ -62,10 +62,10 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 			httpOnly: true,
 		})
 
-		let bool = await redisCli.set('refreshToken', refreshToken);
-		let tokenData = await redisCli.get('refreshToken');
-		bool = await redisCli.sendCommand(['EXPIRE', 'refreshToken', '604800']);
-		
+		const tokenName : string = `refreshToken${newUser.id}`;
+		let bool : 1|0 = await redisCli.set(tokenName, refreshToken);
+		bool = await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
+
 		res.status(200);
 		return res.redirect('/');
 	}
