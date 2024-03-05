@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import nunjucks from 'nunjucks';
 import methodOverride from 'method-override';
 import cors from 'cors';
+import { createClient } from 'redis';
 
 dotenv.config();
 import pageRouter from '../routes/page';
@@ -37,6 +38,20 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(methodOverride('_method'));
 app.use(cors());
 
+const redisClient = createClient({
+  url: `redis://${process.env.REDIS_USERNAME}:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}/0`,
+  legacyMode: true,
+});
+redisClient.on('connect', () => {
+  console.info('Redis connected');
+});
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error', err);
+});
+redisClient.connect().then();
+const redisCli = redisClient.v4;
+
+
 app.use('/auth', authRouter);
 app.use('/item', itemRouter);
 app.use('/qAndA', qAndARouter)
@@ -64,4 +79,4 @@ const errorHandler: ErrorRequestHandler = (err, req: express.Request, res: expre
 };
 app.use(errorHandler);
 
-export {app}
+export {app, redisCli}
