@@ -6,6 +6,7 @@ import { FieldPacket } from "mysql2/promise";
 import pool from "../models/db";
 
 import {user, reqBody} from "../types/model";
+import { redisCli } from '../src/app';
 dotenv.config();
 
 const postUser: RequestHandler = async(req: Request, res: Response) => {
@@ -60,10 +61,10 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 			secure: false,
 			httpOnly: true,
 		})
-		res.cookie('refreshToken', refreshToken, {
-			secure: false,
-			httpOnly: true,
-		})
+
+		let bool = await redisCli.set('refreshToken', refreshToken);
+		let tokenData = await redisCli.get('refreshToken');
+		bool = await redisCli.sendCommand(['EXPIRE', 'refreshToken', '604800']);
 		
 		res.status(200);
 		return res.redirect('/');
