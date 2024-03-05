@@ -43,11 +43,11 @@ const getUserToToken: (arg: string) => Promise<user | undefined> = async(accessT
 	}
 }
 
-function makeJwt(id:string, secret: string): string {
+function makeJwt(id:string, secret: string, time: number): string {
 	const token: string = jwt.sign({
 		id: id,
 	}, secret, {
-		expiresIn: '5h',
+		expiresIn: `${time}s`,
 	});
 	return token
 }
