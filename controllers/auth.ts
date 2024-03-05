@@ -44,7 +44,7 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 			email: email,
 			name : name,
 		}, accessSecret, {
-			expiresIn: '1m',
+			expiresIn: '24h',
 		});
 
 		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
@@ -156,7 +156,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 				email: exUser.email,
 				name : exUser.name,
 			}, accessSecret, {
-				expiresIn: '1m',
+				expiresIn: '24h',
 			});
 
 			const refreshSecret: string = process.env.REFRESH_SECRET || " ";
@@ -166,7 +166,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 				email: exUser.email,
 				name: exUser.name,
 			}, refreshSecret, {
-				expiresIn: '300m',
+				expiresIn: '604800s',
 			});
 
 			res.cookie('accessToken', accessToken, {
