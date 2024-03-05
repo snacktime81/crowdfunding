@@ -7,6 +7,8 @@ import pool from "../models/db";
 
 import {user, reqBody} from "../types/model";
 import { redisCli } from '../src/app';
+import { makeJwt } from "../func/token";
+
 dotenv.config();
 
 const postUser: RequestHandler = async(req: Request, res: Response) => {
@@ -39,23 +41,11 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 		const newUser = row[0];
 		const accessSecret: string = process.env.ACCESS_SECRET || " ";
 
-		const accessToken: string = jwt.sign({
-			id: newUser.id,
-			email: email,
-			name : name,
-		}, accessSecret, {
-			expiresIn: '24h',
-		});
+		const accessToken: string = makeJwt(newUser.id, accessSecret, 18000);
 
 		const refreshSecret: string = process.env.REFRESH_SECRET || " ";
 
-		const refreshToken: string = jwt.sign({
-			id: newUser.id,
-			email: email,
-			name: name,
-		}, refreshSecret, {
-			expiresIn: '604800s',
-		});
+		const refreshToken: string = makeJwt(newUser.id, refreshSecret, 604800)
 
 		res.cookie('accessToken', accessToken, {
 			secure: false,
@@ -157,23 +147,11 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 			
 			const accessSecret: string = process.env.ACCESS_SECRET || " ";
 
-			const accessToken: string = jwt.sign({
-				id: exUser.id,
-				email: exUser.email,
-				name : exUser.name,
-			}, accessSecret, {
-				expiresIn: '24h',
-			});
+			const accessToken: string = makeJwt(exUser.id, accessSecret, 18000);
 
 			const refreshSecret: string = process.env.REFRESH_SECRET || " ";
 
-			const refreshToken: string = jwt.sign({
-				id: exUser.id,
-				email: exUser.email,
-				name: exUser.name,
-			}, refreshSecret, {
-				expiresIn: '604800s',
-			});
+			const refreshToken: string = makeJwt(exUser.id, refreshSecret, 604800);
 
 			res.cookie('accessToken', accessToken, {
 				secure: false,
