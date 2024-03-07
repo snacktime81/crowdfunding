@@ -36,7 +36,5 @@ interface reqBody{
 
 interface payload extends jwt.JwtPayload{
 	id: number,
-	email: string,
-	name: string
 }
 export {user, item, qAndA, reqBody, payload}
