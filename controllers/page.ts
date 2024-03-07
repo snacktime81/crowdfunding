@@ -97,10 +97,15 @@ const renderJoin: RequestHandler = (req : Request, res: Response) => {
 	res.status(200).render('join');
 }
 
-const logout: RequestHandler = (req, res) => {
+const logout: RequestHandler = async(req, res) => {
 	try{
+		const accessToken: string = req.cookies.accessToken;
+		const user: Pick<payload, 'id'> = await getUserToToken(accessToken) as Pick<payload, 'id'>;  // router에서 logout전 tokenCheck를 통해 token의 유효성 검사를 미리진행한다.
 		res.cookie('accessToken', '');
+		res.cookie('refreshToken', '');
 
+		const tokenName = `refreshToken${user.id}`;
+		await redisCli.del(tokenName);
 		res.status(200).redirect('/');
 	}
 	catch(err){
