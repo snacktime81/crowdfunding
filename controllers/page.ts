@@ -54,7 +54,6 @@ const renderHome: RequestHandler = async(req, res) => {
 				const redisRefreshToken: string = await redisCli.get(tokenName)
 				if (redisRefreshToken === refreshToken){  // RTR
 					data = {loginState: true, items: items};
-					await redisCli.set(tokenName, redisRefreshToken);
 					accessToken = makeJwt(`${refreshData.id}`, accessSecret, 18000);
 					res.cookie('accessToken', accessToken, {
 						secure: false,
@@ -65,6 +64,7 @@ const renderHome: RequestHandler = async(req, res) => {
 						secure: true,
 						httpOnly: true,
 					});
+					await redisCli.set(tokenName, redisRefreshToken);
 					console.log('token refresh');
 				} else{
 					data = {loginState: false, items: items};
