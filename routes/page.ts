@@ -11,7 +11,7 @@ router.get('/', renderHome);
 
 router.get('/login', renderLogin);
 router.get('/join', renderJoin);
-router.get('/logout', logout);
+router.get('/logout', tokenCheck, logout);
 
 router.get('/profile', tokenCheck, renderProfile);
 
