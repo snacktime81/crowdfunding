@@ -6,7 +6,7 @@ import pool from "../models/db";
 import {user, payload} from "../types/model";
 
 
-const verify = (token: string, secret: string) => {
+const verify = (token: string, secret: string) : payload | 'expired' => {
     try{    
 		const data: payload = jwt.verify(token, secret) as payload;
 		return data;
