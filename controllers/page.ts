@@ -44,9 +44,10 @@ const renderHome: RequestHandler = async(req, res) => {
 
 		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
 
+		let refreshToken: string = req.cookies.refreshToken;
+		const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
+
 		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
-			let refreshToken: string = req.cookies.refreshToken;
-			const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
 			if (isExpired(refreshData)) {
 				data = {loginState: false, items: items};
 			} else{
@@ -77,7 +78,11 @@ const renderHome: RequestHandler = async(req, res) => {
 			}
 		}
 		else{ // accessToken이 남아있을떄
-			data = {loginState: true, items: items};
+			if (isExpired(refreshData)) {
+				data = {loginState: false, items: items};
+			} else{
+				data = {loginState: true, items: items};
+			}
 		}
 		res.status(200).render('index', data);
 	}
