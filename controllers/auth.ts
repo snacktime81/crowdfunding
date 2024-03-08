@@ -61,8 +61,7 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 		await redisCli.set(tokenName, refreshToken);
 		await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
-		res.status(200);
-		return res.redirect('/');
+		res.status(303).redirect('/');
 	}
 	catch(err){
 		res.status(500)
@@ -81,11 +80,12 @@ const putUser: RequestHandler = async(req, res) => {
 		const data = [name, hash, id];
 
 		await pool.query(query, data);
-		res.redirect(200, `${id}`);
+		//res.status(303).redirect(`/`);
+		res.json(`/${id}`);
 	}
 	catch(err){
-		res.status(500)
-		console.log(err)
+		res.status(500);
+		console.log(err);
 	}
 }
 
@@ -108,12 +108,13 @@ const deleteUser: RequestHandler = async(req, res) => {
 
 			query = "DELETE FROM USER WHERE ID = (?);";
 			await pool.query(query, data);
-
-			res.redirect(201, '/');
+			res.status(303);
+			return res.json('/');
 		} else{
-			console.log('no');
-			res.redirect(409, `/${id}`);
+			res.status(400);
+			res.json(`${id}`);
 		}
+
 	}
 	catch(err){
 		res.status(500)
@@ -166,8 +167,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 			redisCli.set(tokenName, refreshToken);
 			await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
-			res.status(200);
-			res.redirect('/');
+			res.status(201).redirect('/');
 		} else{
 			res.status(409);
 			return res.send(

@@ -37,14 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 function userDelete() {
     return __awaiter(this, void 0, void 0, function () {
-        var confirmPassword, userId, url, response, err_1;
+        var confirmPassword, userId, url, response, path, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 3, , 4]);
                     confirmPassword = prompt("삭제를 위해서 비밀번호를 입력해 주세요");
                     userId = window.location.pathname;
-                    url = "/auth".concat(userId);
+                    url = "auth".concat(userId);
                     return [4 /*yield*/, fetch(url, {
                             method: 'delete',
                             headers: {
@@ -56,18 +56,23 @@ function userDelete() {
                         })];
                 case 1:
                     response = _a.sent();
-                    if (response.ok) {
-                        window.location.href = '/';
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    path = _a.sent();
+                    if (path == '/') {
+                        alert('삭제되었습니다.');
+                        window.location.href = path;
                     }
                     else {
-                        window.location.href = userId;
+                        alert('비밀번호가 올바르지 않습니다.');
+                        window.location.href = path;
                     }
-                    return [3 /*break*/, 3];
-                case 2:
+                    return [3 /*break*/, 4];
+                case 3:
                     err_1 = _a.sent();
                     console.log('err', err_1);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -80,27 +85,38 @@ function nullCheck(data) {
         return false;
     }
 }
+// @ts-ignore
 var form = document.getElementById('userData');
 form.addEventListener('submit', function (e) { return __awaiter(_this, void 0, void 0, function () {
+    var c;
     return __generator(this, function (_a) {
         e.preventDefault();
-        userPut();
+        c = e.submitter;
+        if (c == null) {
+            alert('다시 시도해 주세요');
+            window.location.href = '/';
+        }
+        else if (c.className == 'b1') {
+            userPut();
+        }
+        else if (c.className == 'button.b2') {
+            userDelete();
+        }
         return [2 /*return*/];
     });
 }); });
 function userPut() {
     return __awaiter(this, void 0, void 0, function () {
-        var confirmData, userId, url, formData, object_1, data, response, err_2;
+        var confirmData, userId, url, formData, object_1, data, response, id, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
+                    _a.trys.push([0, 4, , 5]);
                     confirmData = confirm("유저 정보 변경에 동의 하십니까?");
                     userId = window.location.pathname;
-                    url = "auth/".concat(userId);
-                    console.log(form);
-                    if (!confirmData) return [3 /*break*/, 2];
-                    if (!!nullCheck(form)) return [3 /*break*/, 2];
+                    url = "auth".concat(userId);
+                    if (!confirmData) return [3 /*break*/, 3];
+                    if (!!nullCheck(form)) return [3 /*break*/, 3];
                     formData = new FormData(form);
                     object_1 = {};
                     formData.forEach(function (value, key) {
@@ -117,15 +133,17 @@ function userPut() {
                         })];
                 case 1:
                     response = _a.sent();
-                    _a.label = 2;
+                    return [4 /*yield*/, response.json()];
                 case 2:
-                    window.location.href = userId;
-                    return [3 /*break*/, 4];
-                case 3:
+                    id = _a.sent();
+                    window.location.href = id;
+                    _a.label = 3;
+                case 3: return [3 /*break*/, 5];
+                case 4:
                     err_2 = _a.sent();
                     console.log(err_2);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
