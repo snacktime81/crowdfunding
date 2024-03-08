@@ -52,7 +52,7 @@ const tokenCheck: RequestHandler = async(req, res, next) => {
 					res.cookie('refreshToken', '')
 					const tokenName: string = `refreshToken${refreshData.id}`;
 					await redisCli.del(tokenName);
-					res.status(409).send('<script> alert("다시 로그인해 주세요"); location.href="/login"; </script>');
+					res.status(409).send('<script> alert("다시 로그인 해주세요"); location.href="/login"; </script>');
 				}
 			}
 		}
