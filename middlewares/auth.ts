@@ -2,17 +2,16 @@ import {RequestHandler, Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import {FieldPacket} from 'mysql2/promise';
 
-import {verify, isExpired} from '../func/token';
+import {verify, isExpired, makeJwt} from '../func/token';
 import { NoMatchId } from '../types/error';
 import {payload} from "../types/model";
 import { item } from '../types/model';
 import pool from "../models/db";
+import { redisCli } from "../src/app";
 
-
-const tokenCheck: RequestHandler = (req, res, next) => {
+const tokenCheck: RequestHandler = async(req, res, next) => {
 	try{
-		const accessToken: string = req.cookies.accessToken;
-		const refreshToken: string = req.cookies.refreshToken;
+		let accessToken: string = req.cookies.accessToken;
 
 		const accessSecret = process.env.ACCESS_SECRET || '';
 		const refreshSecret = process.env.REFRESH_SECRET ||'';
@@ -23,6 +22,8 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 		}
 
 		const accessData : payload | 'expired' = verify(accessToken, accessSecret) as payload | 'expired';
+
+		let refreshToken: string = req.cookies.refreshToken;
 		const refreshData : payload | 'expired' = verify(refreshToken, refreshSecret) as payload | 'expired';
 
 		if(isExpired(accessData)){ // accessToken이 만료 되었을 때
@@ -30,18 +31,29 @@ const tokenCheck: RequestHandler = (req, res, next) => {
 				res.status(401).send("<script>alert('로그인이 필요한 페이지 입니다.');location.href='/login';</script>");
 			}
 			else{ // refreshToken으로 accessToken 재발급
-				const accessToken: string = jwt.sign({
-					id: refreshData.id,
-					email: refreshData.email,
-					name: refreshData.name,
-				}, accessSecret, {
-					expiresIn: '5m',
-				});
-				res.cookie('accessToken', accessToken, {
-					secure: false,
-					httpOnly: true,
-				});
-				next();
+				const tokenName: string = `refreshToken${refreshData.id}`;
+				const redisRefreshToken: string = await redisCli.get(tokenName);
+				if (redisRefreshToken === refreshToken) {
+					accessToken = makeJwt(`${refreshData.id}`, accessSecret, 18000);
+					res.cookie('accessToken', accessToken, {
+						secure: false,
+						httpOnly: true,
+					});
+					refreshToken = makeJwt(`${refreshData.id}`, accessSecret, 18000);
+					res.cookie('refreshToken', refreshToken, {
+						secure: true,
+						httpOnly: true,
+					});
+					await redisCli.set(tokenName, redisRefreshToken);
+					console.log('token refresh')
+					next();
+				} else{
+					res.cookie('accessToken', '')
+					res.cookie('refreshToken', '')
+					const tokenName: string = `refreshToken${refreshData.id}`;
+					await redisCli.del(tokenName);
+					res.status(409).send('<script> alert("다시 로그인해 주세요"); location.href="/login"; </script>');
+				}
 			}
 		}
 		else{ // accessToken이 남아있을떄
