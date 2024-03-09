@@ -9,7 +9,7 @@ import { Error } from 'sequelize';
 import { CustomError } from '../types/error';
 
 const renderItem: RequestHandler = (req : Request, res: Response) => {
-	res.render('item');
+	res.status(200).render('item');
 }
 
 const postItem: RequestHandler = async(req: Request, res: Response) => {
@@ -28,8 +28,7 @@ const postItem: RequestHandler = async(req: Request, res: Response) => {
 		
 		await pool.query(query, data);
 
-		
-		res.status(200).redirect('/item');
+		res.status(201).redirect('/item');
 	}
 	catch(err){
 		if((err as Error).message === 'Data too long for column \'name\' at row 1'){
@@ -47,7 +46,7 @@ const putItem: RequestHandler = async(req, res) => {
 		const data = [name, price, percent, describe, image, deadline, itemId];
 		
 		await pool.query(query, data);
-		res.redirect(200, 'item/edit/itemId');
+		res.redirect(204, 'item/edit/itemId');
 	}
 	catch(err){
 		if((err as Error).message === 'Data too long for column \'name\' at row 1'){
@@ -62,9 +61,10 @@ const deleteItem: RequestHandler = async(req, res) => {
 		const itemId = req.params.id;
 		const data = [itemId];
 		await pool.query(query, data);
-		res.redirect(200, 'item/itemId')
+		res.redirect(204, 'item/itemId')
 	}
 	catch(err){
+		res.status(500);
 		console.log(err);
 	}
 }
@@ -108,6 +108,7 @@ const renderItemId: RequestHandler = async(req: Request, res: Response) => {
 		res.status(200).render('itemDetail', {item, userMatch: userMatch});
 	}
 	catch(err){
+		res.status(500);
 		console.log(err);
 	}
 }
@@ -181,7 +182,7 @@ const postOrder: RequestHandler = async(req, res) => {
 		data = [itemId, userId, purchasePercent, priceNumber];
 
 		await pool.query(query, data);
-		res.status(200);
+		res.status(201);
 	}
 	catch(err){
 		res.status(500);

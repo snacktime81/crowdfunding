@@ -11,21 +11,6 @@ import { redisCli } from '../src/app';
 
 dotenv.config();
 
-
-const renderMainNotLoggedIn: RequestHandler = async(req: Request, res: Response) => {
-	const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
-	const [items, fields]: [item[], FieldPacket[]] = await pool.query(query);
-
-	res.status(200).render('index', {loginState: false, items: items});	
-};
-
-const renderMainLoggedIn: RequestHandler = async(req: Request, res: Response) => {
-	const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
-	const [items, fields]: [item[], FieldPacket[]] = await pool.query(query);
-	
-	res.status(200).render('index', {loginState: true, items: items});	
-};
-
 const renderHome: RequestHandler = async(req, res) => {
 	try{
 		const query = "SELECT * FROM ITEM ORDER BY views DESC LIMIT 3";
@@ -122,7 +107,7 @@ const renderProfile: RequestHandler = async(req, res) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const user = await getUserToToken(accessToken);
-		res.status(302).render('profile', {user: user});
+		res.status(200).render('profile', {user: user});
 	}
 	catch(err){
 		throw(err);
@@ -133,11 +118,11 @@ const renderUser: RequestHandler = async(req, res) => {
 	try{
 		const accessToken: string = req.cookies.accessToken;
 		const user = await getUserToToken(accessToken);
-		res.status(302).render('user', {user: user})
+		res.status(200).render('user', {user: user})
 	}
 	catch(err){
 		res.status(500);
 	}
 }
 
-export {renderMainNotLoggedIn, renderMainLoggedIn, renderLogin, renderJoin, logout, renderProfile, renderUser, renderHome};
+export {renderLogin, renderJoin, logout, renderProfile, renderUser, renderHome};

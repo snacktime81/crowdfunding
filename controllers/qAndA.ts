@@ -17,7 +17,7 @@ interface payload extends jwt.JwtPayload{
 }
 
 const renderQAndA: express.RequestHandler = (req, res) => {
-    res.render('qAndA');
+    res.status(200).render('qAndA');
 }
 
 const postQAndA: express.RequestHandler = async(req, res) => {
@@ -33,8 +33,8 @@ const postQAndA: express.RequestHandler = async(req, res) => {
 		const data = [userId , question]
 
         await pool.query(query, data);
-        res.status(200);
-		res.send(`<script> alert('질문이 정상적으로 등록되었습니다!'); location.href="/qAndA" </script>`);
+
+		res.status(201).send(`<script> alert('질문이 정상적으로 등록되었습니다!'); location.href="/qAndA" </script>`);
     }
     catch(err){
         res.status(500);
@@ -55,7 +55,7 @@ const renderQAndAList: express.RequestHandler = async(req , res) => {
 	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query, data);
     const qAndA = rows;
 
-	res.render('qAndAList', {items: qAndA});
+	res.status(200).render('qAndAList', {items: qAndA});
 }
 
 const renderQAndAId: express.RequestHandler = async(req, res) => {
@@ -67,7 +67,7 @@ const renderQAndAId: express.RequestHandler = async(req, res) => {
 	const [rows, fields]:[qAndA[], FieldPacket[]] = await pool.query(query, dataId);
 	const question = rows[0];
 	
-	res.render('qAndADetail', {question});
+	res.status(200).render('qAndADetail', {question});
 };
 
 const renderFAQList: express.RequestHandler = async(req, res) => {
@@ -78,7 +78,7 @@ const renderFAQList: express.RequestHandler = async(req, res) => {
 	const [rows, fields]: [qAndA[], FieldPacket[]] = await pool.query(query);
     const FAQ = rows;
 
-	res.render('FAQList', {items: FAQ});
+	res.status(200).render('FAQList', {items: FAQ});
 }
 
 const renderMyQAList: express.RequestHandler = async(req, res) => {

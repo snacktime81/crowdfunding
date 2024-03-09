@@ -61,7 +61,7 @@ const postUser: RequestHandler = async(req: Request, res: Response) => {
 		await redisCli.set(tokenName, refreshToken);
 		await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
-		res.status(303).redirect('/');
+		res.status(201).redirect('/');
 	}
 	catch(err){
 		res.status(500)
@@ -167,7 +167,7 @@ const postLogin: RequestHandler = async(req: Request, res: Response) => {
 			redisCli.set(tokenName, refreshToken);
 			await redisCli.sendCommand(['EXPIRE', tokenName, '604800']);
 
-			res.status(201).redirect('/');
+			res.status(303).redirect('/');
 		} else{
 			res.status(409);
 			return res.send(
