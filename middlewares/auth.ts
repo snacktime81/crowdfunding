@@ -41,7 +41,7 @@ const tokenCheck: RequestHandler = async(req, res, next) => {
 					});
 					refreshToken = makeJwt(`${refreshData.id}`, accessSecret, 18000);
 					res.cookie('refreshToken', refreshToken, {
-						secure: true,
+						secure: false,
 						httpOnly: true,
 					});
 					await redisCli.set(tokenName, redisRefreshToken);
