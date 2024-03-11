@@ -171,17 +171,24 @@ const postOrder: RequestHandler = async(req, res) => {
 		
 		//console.log(typeof purchasePercent, typeof itemId, typeof price);
 		
-		let query = "SELECT user_id FROM ITEM WHERE id = ?";
+		let query = "SELECT user_id, percent FROM ITEM WHERE id = ?";
 		let data = [itemId];
 
 		const [userIds, fields]: [Omit<user, "email" | "name" | "password" | "authority">, FieldPacket[]] = await pool.query(query, data);
 
-		const userId = userIds[0].user_id;
+		const userId : number = userIds[0].user_id;
+		const leftPercent: number = userIds[0].percent - purchasePercent; // 구매후 구매 할 수 있는 량
 
 		query = "INSERT INTO `ORDER`(idea_id, user_id, purchase_percent, price) VALUES(?, ?, ?, ?)";
 		data = [itemId, userId, purchasePercent, priceNumber];
 
 		await pool.query(query, data);
+
+		query = `UPDATE ITEM SET PERCENT = ${leftPercent} WHERE ID = ?`;
+		data = [itemId];
+
+		await pool.query(query, data);
+
 		res.status(201);
 	}
 	catch(err){
